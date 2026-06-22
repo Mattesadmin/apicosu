@@ -172,7 +172,7 @@ const Index = () => {
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.22em] text-[#70bdff]">Module</p>
-            <h2 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">Sechs spezialisierte SAP-Assistenten</h2>
+            <h2 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">Sechs professionelle Assistenten</h2>
           </div>
           <p className="max-w-xl text-sm leading-6 text-zinc-400">
             Jedes Modul ist auf einen klaren Beratungszweck optimiert: Input erfassen, Kontext strukturieren,
