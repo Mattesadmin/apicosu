@@ -90,7 +90,7 @@ const Index = () => {
           </div>
           <div className="hidden items-center gap-2 rounded-full border border-[#2a2a2a] bg-[#181818] px-4 py-2 text-sm text-zinc-300 md:flex">
             <span className="h-2 w-2 rounded-full bg-[#39a5ff] shadow-[0_0_14px_rgba(57,165,255,0.9)]" />
-            SAP Consulting AI
+            Consulting AI
           </div>
         </div>
       </header>
@@ -100,16 +100,16 @@ const Index = () => {
           <div className="space-y-7">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#0A6ED1]/30 bg-[#0A6ED1]/10 px-4 py-2 text-sm font-medium text-[#9bd2ff]">
               <Sparkles className="h-4 w-4" />
-              KI-gestützte SAP-Beratung, Analyse und Dokumentation
+              KI-gestützter Berater Support, Analyse und Dokumentation
             </div>
 
             <div className="space-y-5">
               <h1 className="max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.04em] text-white md:text-6xl">
-                Präzise SAP-Unterstützung für Beratungsteams.
+                Effektive SAP-Unterstützung für Beratungsteams.
               </h1>
               <p className="max-w-2xl text-base leading-8 text-zinc-300 md:text-lg">
                 APICOSU strukturiert Fehleranalysen, Customizing-Prüfungen, Transportbewertungen,
-                Blueprints, Testdaten und Trainingsunterlagen in einem professionellen Enterprise-Dashboard.
+                Blueprints, Testdaten und Trainingsunterlagen in einem professionellen Dashboard.
               </p>
             </div>
 
@@ -176,7 +176,7 @@ const Index = () => {
           </div>
           <p className="max-w-xl text-sm leading-6 text-zinc-400">
             Jedes Modul ist auf einen klaren Beratungszweck optimiert: Input erfassen, Kontext strukturieren,
-            Analyse generieren und Ergebnisse direkt in Projektdokumentation übernehmen.
+            Analyse und Ergebnisse generieren.
           </p>
         </div>
 
@@ -216,10 +216,10 @@ const Index = () => {
 
       <footer className="relative border-t border-[#2a2a2a] bg-[#0b0b0b]">
         <div className="mx-auto flex max-w-[1200px] flex-col gap-4 px-5 py-8 text-sm text-zinc-500 md:flex-row md:items-center md:justify-between md:px-8">
-          <p>APICOSU · Intelligent Consulting Support for SAP Projects</p>
+          <p>APICOSU · Application for Intelligent Consulting Support</p>
           <div className="flex items-center gap-2 text-zinc-400">
             <ClipboardList className="h-4 w-4 text-[#70bdff]" />
-            Analyse · Dokumentation · Training · Testdaten
+            Issue · Analyze · Solution
           </div>
         </div>
       </footer>
