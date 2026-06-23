@@ -1,6 +1,8 @@
 import { BrainCircuit, ClipboardList } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { modules } from "@/data/modules";
+import { ModuleDropdown } from "@/components/ModuleDropdown";
+
 
 const utilityLinks = [
   { label: "Pricing", path: "/pricing" },
@@ -44,11 +46,9 @@ export const AppHeader = () => (
         <NavLink to="/" className={navLinkClass} end>
           Home
         </NavLink>
-        {modules.map((module) => (
-          <NavLink key={module.path} to={module.path} className={navLinkClass}>
-            {module.navTitle}
-          </NavLink>
-        ))}
+        
+        <ModuleDropdown />
+        
         {utilityLinks.map((link) => (
           <NavLink key={link.path} to={link.path} className={navLinkClass}>
             {link.label}
@@ -66,8 +66,46 @@ export const AppHeader = () => (
 
 export const AppFooter = () => (
   <footer className="relative border-t border-[#2a2a2a] bg-[#0b0b0b]">
-    <div className="mx-auto flex max-w-[1200px] flex-col gap-4 px-5 py-8 text-sm text-zinc-500 md:flex-row md:items-center md:justify-between md:px-8">
-      <p>APICOSU · Application for Intelligent Consulting Support</p>
+    <div className="mx-auto flex max-w-[1200px] flex-col gap-6 px-5 py-8 text-sm text-zinc-500 md:flex-row md:items-center md:justify-between md:px-8">
+      <p>APICOSU · 2026</p>
+
+      {/* Link-Bereich */}
+      <div className="flex flex-wrap items-center gap-4 text-zinc-400">
+
+        <NavLink to="/impressum" className="hover:text-white transition">
+          Impressum
+        </NavLink>
+
+        <NavLink to="/datenschutz" className="hover:text-white transition">
+          Datenschutz
+        </NavLink>
+
+        <NavLink to="/ai-act" className="hover:text-white transition">
+          AI‑Act
+        </NavLink>
+
+        <NavLink to="/agb" className="hover:text-white transition">
+          AGB
+        </NavLink>
+
+        <NavLink to="/haftung" className="hover:text-white transition">
+          Haftung
+        </NavLink>
+
+        <NavLink to="/widerruf" className="hover:text-white transition">
+          Widerruf
+        </NavLink>
+
+        {/* Gesetzlich vorgeschriebener Kündigungsbutton */}
+        <NavLink
+          to="/kuendigung"
+          className="rounded-full bg-[#0A6ED1] px-4 py-1.5 text-white font-medium shadow-lg shadow-[#0A6ED1]/40 hover:bg-[#0b7ff0] transition"
+        >
+          Vertrag kündigen
+        </NavLink>
+      </div>
+
+      {/* Branding rechts */}
       <div className="flex items-center gap-2 text-zinc-400">
         <ClipboardList className="h-4 w-4 text-[#70bdff]" />
         Issue · Analyze · Solution
@@ -77,10 +115,10 @@ export const AppFooter = () => (
 );
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => (
-  <main className="min-h-screen bg-[#0e0e0e] text-white antialiased">
+  <>
     <AppBackground />
     <AppHeader />
-    {children}
+    <main>{children}</main>
     <AppFooter />
-  </main>
+  </>
 );
