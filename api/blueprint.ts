@@ -1,25 +1,15 @@
-import { parseRequest } from "./utils";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { runBlueprint } from '../src/modules/blueprint';
 
-export const config = {
-  runtime: "edge"
-};
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-export default async function handler(req: Request) {
-  const { combined } = await parseRequest(req);
-
-  return new Response(
-    JSON.stringify({
-      module: "Blueprint Generator",
-      structure: [
-        "1. Ausgangssituation",
-        "2. Zieldefinition",
-        "3. Prozessbeschreibung",
-        "4. Technische Details",
-        "5. Risiken & Abhängigkeiten",
-        "6. Empfehlungen"
-      ],
-      inputPreview: combined.slice(0, 300)
-    }),
-    { status: 200 }
-  );
+  try {
+    const result = await runBlueprint(req as any);
+    return res.status(200).json(result);
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal server error', details: err });
+  }
 }

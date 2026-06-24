@@ -32,8 +32,8 @@ const Index = () => {
             </div>
 
             <div className="space-y-5">
-              <h1 className="max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.04em] text-white md:text-6xl">
-                Effektive SAP-Unterstützung für Beratungsteams.
+              <h1 className="max-w-6xl text-6xl font-semibold leading-tight tracking-[-0.02em] text-white md:text-5xl">
+                Effektive SAP-Beratung
               </h1>
               <p className="max-w-2xl text-base leading-8 text-zinc-300 md:text-lg">
                 APICOSU strukturiert Fehleranalysen, Customizing-Prüfungen, Transportbewertungen,

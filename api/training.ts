@@ -1,24 +1,15 @@
-import { parseRequest } from "./utils";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { runTraining } from '../src/modules/training';
 
-export const config = {
-  runtime: "edge"
-};
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-export default async function handler(req: Request) {
-  const { combined } = await parseRequest(req);
-
-  return new Response(
-    JSON.stringify({
-      module: "Training Generator",
-      steps: [
-        "1. Transaktion öffnen",
-        "2. Eingabefelder prüfen",
-        "3. Werte erfassen",
-        "4. Validierung durchführen",
-        "5. Buchung ausführen"
-      ],
-      inputPreview: combined.slice(0, 300)
-    }),
-    { status: 200 }
-  );
+  try {
+    const result = await runTraining(req as any);
+    return res.status(200).json(result);
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal server error', details: err });
+  }
 }

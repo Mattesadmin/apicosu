@@ -1,22 +1,15 @@
-import { parseRequest } from "./utils";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { runTestdata } from '../src/modules/testdata';
 
-export const config = {
-  runtime: "edge"
-};
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-export default async function handler(req: Request) {
-  const { combined } = await parseRequest(req);
-
-  return new Response(
-    JSON.stringify({
-      module: "Testdaten Generator",
-      examples: [
-        { field: "BUKRS", value: "1000" },
-        { field: "WERKS", value: "1010" },
-        { field: "MATNR", value: "MAT-10001" }
-      ],
-      inputPreview: combined.slice(0, 300)
-    }),
-    { status: 200 }
-  );
+  try {
+    const result = await runTestdata(req as any);
+    return res.status(200).json(result);
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal server error', details: err });
+  }
 }

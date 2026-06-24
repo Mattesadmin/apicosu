@@ -1,20 +1,15 @@
-import { parseRequest } from "./utils";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { runTransportImpact } from '../src/modules/transport-impact';
 
-export const config = {
-  runtime: "edge"
-};
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-export default async function handler(req: Request) {
-  const { combined } = await parseRequest(req);
-
-  const objects = combined.match(/(R3TR|LIMU)\s+\w+/g) || [];
-
-  return new Response(
-    JSON.stringify({
-      module: "Transport Impact Analyzer",
-      objects,
-      count: objects.length
-    }),
-    { status: 200 }
-  );
+  try {
+    const result = await runTransportImpact(req as any);
+    return res.status(200).json(result);
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal server error', details: err });
+  }
 }
