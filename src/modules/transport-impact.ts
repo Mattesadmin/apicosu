@@ -1,18 +1,13 @@
-import { parseRequest } from "./utils";
-
-export async function runTransportImpact(req: Request) {
-  const { combined } = await parseRequest(req);
-
-  // TODO: echte Transport-Impact-Logik
-  const risks: string[] = [];
-  if (combined.includes("SPAU")) risks.push("SPAU-Konflikte möglich");
-  if (combined.includes("SPDD")) risks.push("SPDD-Anpassungen prüfen");
-  if (combined.includes("Z_")) risks.push("Eigenentwicklungen von Transporten betroffen");
+export async function runTransportImpact({ combined }: { combined: string }) {
+  const lines = combined.split("\n").filter(Boolean);
 
   return {
     module: "Transport Impact Analyzer",
-    risks,
-    length: combined.length,
-    preview: combined.slice(0, 300)
+    entries: lines.map((line, i) => ({
+      id: i + 1,
+      raw: line,
+      impact: line.length * 2
+    })),
+    totalImpact: lines.reduce((acc, l) => acc + l.length * 2, 0)
   };
 }

@@ -1,19 +1,10 @@
-import { parseRequest } from "./utils";
-
-export async function runTestdata(req: Request) {
-  const { combined } = await parseRequest(req);
-
-  // TODO: echte Testdaten-Generierung
-  const suggestedScenarios = [
-    "Standardprozess mit Erfolgsfall",
-    "Fehlerfall mit ungültigen Eingaben",
-    "Grenzwerte (maximale Feldlängen, Datumsgrenzen)"
-  ];
-
+export async function runTestdata({ combined }: { combined: string }) {
   return {
     module: "Testdaten Generator",
-    suggestedScenarios,
-    length: combined.length,
-    preview: combined.slice(0, 300)
+    generated: combined.split("\n").map((line, i) => ({
+      id: i + 1,
+      value: line.trim()
+    })),
+    count: combined.split("\n").length
   };
 }
