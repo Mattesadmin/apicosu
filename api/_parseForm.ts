@@ -1,3 +1,4 @@
+// @ts-ignore
 import Busboy from 'busboy';
 
 export function parseForm(req: any): Promise<{ fileText: string; text: string }> {
