@@ -3,6 +3,7 @@ import { Copy, Download, FileUp, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { ApicosuModule } from "@/data/modules";
+import { callApiForm } from "@/lib/api";
 
 export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
   const Icon = module.icon;
@@ -11,23 +12,25 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleAnalyze() {
     setLoading(true);
     setResult(null);
+    setError(null);
 
-    const formData = new FormData();
-    if (file) formData.append("file", file);
-    formData.append("text", text);
+    try {
+      const formData = new FormData();
+      if (file) formData.append("file", file);
+      formData.append("text", text);
 
-    const res = await fetch(`/api/${module.api}`, {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await res.json();
-    setResult(data);
-    setLoading(false);
+      const data = await callApiForm(module.api, formData);
+      setResult(data);
+    } catch (err: any) {
+      setError(err.message || "Unbekannter Fehler");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleCopy() {
@@ -131,6 +134,12 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
           >
             {loading ? "Analysiere..." : "Analyze"}
           </Button>
+
+          {error && (
+            <p className="mt-4 text-sm text-red-400">
+              {error}
+            </p>
+          )}
         </section>
 
         {/* RIGHT SIDE – RESULT */}
@@ -156,7 +165,7 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
               <Button
                 onClick={handleDownload}
                 variant="outline"
-                className="rounded-2xl border-[#2a2a2a] bg-[#101010] text-zinc-200 hover:bg-[#202020] hover:text-white"
+                className="rounded-2a border-[#2a2a2a] bg-[#101010] text-zinc-200 hover:bg-[#202020] hover:text-white"
               >
                 <Download className="h-4 w-4" />
                 Download result
