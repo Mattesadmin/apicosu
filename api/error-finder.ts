@@ -7,7 +7,15 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const result = await runErrorFinder(req);
+    const formData = await req.formData();
+    const file = formData.get('file') as File | null;
+    const text = formData.get('text') as string | null;
+
+    const fileText = file ? await file.text() : '';
+    const combined = `${fileText}\n${text || ''}`.trim();
+
+    const result = await runErrorFinder({ combined });
+
     res.statusCode = 200;
     return res.end(JSON.stringify(result));
   } catch (err) {
