@@ -1,15 +1,17 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { runErrorFinder } from '../src/modules/error-finder';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.statusCode = 405;
+    return res.end(JSON.stringify({ error: 'Method not allowed' }));
   }
 
   try {
-    const result = await runErrorFinder(req as any);
-    return res.status(200).json(result);
+    const result = await runErrorFinder(req);
+    res.statusCode = 200;
+    return res.end(JSON.stringify(result));
   } catch (err) {
-    return res.status(500).json({ error: 'Internal server error', details: err });
+    res.statusCode = 500;
+    return res.end(JSON.stringify({ error: 'Internal server error', details: err }));
   }
 }
