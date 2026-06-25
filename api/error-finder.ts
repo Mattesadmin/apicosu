@@ -1,3 +1,4 @@
+import { parseForm } from './_parseForm';
 import { runErrorFinder } from '../src/modules/error-finder';
 
 export default async function handler(req: any, res: any) {
@@ -7,12 +8,8 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const formData = await req.formData();
-    const file = formData.get('file') as File | null;
-    const text = formData.get('text') as string | null;
-
-    const fileText = file ? await file.text() : '';
-    const combined = `${fileText}\n${text || ''}`.trim();
+    const { fileText, text } = await parseForm(req);
+    const combined = `${fileText}\n${text}`.trim();
 
     const result = await runErrorFinder({ combined });
 
