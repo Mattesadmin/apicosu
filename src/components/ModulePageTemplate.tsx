@@ -31,12 +31,12 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
         combined += "\n" + extracted;
       }
 
-      // 2. Lokale Analyse (Error Finder Modul)
+      // 2. Lokale Analyse
       const localAnalysis = await runErrorFinder({ combined });
 
-      // 3. KI-Analyse (ausgelagert in neue Datei)
-      const aiAnalysis = await analyzeErrorWithAI(combined, module.api); 
-     
+      // 3. KI-Analyse
+      const aiAnalysis = await analyzeErrorWithAI(combined, module.api);
+
       // 4. Ergebnis kombinieren
       setResult({
         local: localAnalysis,
@@ -92,6 +92,7 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
 
       {/* GRID */}
       <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
+        
         {/* LEFT SIDE – INPUT */}
         <section className="rounded-2xl border border-[#2a2a2a] bg-[#181818] p-5 shadow-2xl shadow-black/35 md:p-6">
           <div className="mb-6">
@@ -191,6 +192,7 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
           </div>
 
           <div className="min-h-[410px] rounded-2xl border border-[#2a2a2a] bg-[#101010] p-5 shadow-inner shadow-black/30">
+
             {!result && (
               <p className="text-sm leading-7 text-zinc-500">
                 Analysis output will appear here.
@@ -198,10 +200,36 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
             )}
 
             {result && (
-              <pre className="text-sm leading-7 text-zinc-300 whitespace-pre-wrap">
-                {JSON.stringify(result, null, 2)}
-              </pre>
+              <div className="space-y-6 text-sm leading-7 text-zinc-300">
+
+                {/* Lokale Analyse */}
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Local Analysis</h3>
+                  <pre className="whitespace-pre-wrap bg-[#0f0f0f] p-4 rounded-xl border border-[#2a2a2a]">
+                    {JSON.stringify(result.local, null, 2)}
+                  </pre>
+                </div>
+
+                {/* KI-Analyse */}
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-2">AI Analysis</h3>
+
+                  {/* KI-Fehler */}
+                  {result.ai?.error && !result.ai?.raw && (
+                    <p className="text-red-400">{result.ai.error}</p>
+                  )}
+
+                  {/* KI JSON */}
+                  {result.ai?.raw && (
+                    <pre className="whitespace-pre-wrap bg-[#0f0f0f] p-4 rounded-xl border border-[#2a2a2a]">
+                      {JSON.stringify(result.ai.raw, null, 2)}
+                    </pre>
+                  )}
+                </div>
+
+              </div>
             )}
+
           </div>
         </section>
       </div>
