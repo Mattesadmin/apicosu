@@ -2,7 +2,7 @@ import { OpenAI } from "openai";
 import { Anthropic } from "@anthropic-ai/sdk";
 
 export const config = {
-  runtime: "edge",
+  runtime: "node.js",
 };
 
 const SYSTEM_PROMPT = `
