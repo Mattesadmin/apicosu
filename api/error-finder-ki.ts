@@ -24,75 +24,111 @@ Liefere IMMER eine präzise, strukturierte und professionelle Analyse im folgend
   "priority": "",
   "recommended_actions": []
 }
-
-Regeln:
-- Keine Einleitungen, keine Floskeln.
-- Nur konkrete, technische Aussagen.
-- Wenn Informationen fehlen, mache plausible Annahmen.
-- Wenn mehrere Ursachen möglich sind, liste alle auf.
-- Wenn der Fehler typisch für bestimmte SAP-Module ist, erwähne es.
-- Wenn ABAP-Code relevant ist, liefere konkrete Hinweise.
-- Wenn Customizing relevant ist, nenne Tabellen, Pfade und Transaktionen.
-- Wenn Berechtigungen relevant sind, nenne Rollen/Objekte.
-- Wenn Transportprobleme möglich sind, erwähne sie.
-- Wenn Performance relevant ist, nenne Tabellen, Indizes, Selektionslogik.
 `;
 
-export default async function handler(req: Request) {
+export default async function handler(req, res) {
   try {
-    const { text, model } = await req.json();
-
-    if (!text) {
-      return new Response(JSON.stringify({ error: "No text provided" }), { status: 400 });
-    }
-
-    let aiResponse = "";
-
-    // -----------------------------
-    // OPENAI
-    // -----------------------------
-    if (model === "openai") {
-      const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-      const completion = await client.chat.completions.create({
-        model: "gpt-4.1",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: text }
-        ]
-      });
-
-      aiResponse = completion.choices[0].message.content || "";
-    }
-
-    // -----------------------------
-    // ANTHROPIC
-    // -----------------------------
-    else {
-      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-      const completion = await client.messages.create({
-        model: "claude-3-5-sonnet-latest",
-        max_tokens: 2000,
-        messages: [
-          { role: "user", content: SYSTEM_PROMPT + "\n\n" + text }
-        ]
-      });
-
-      // ContentBlocks korrekt extrahieren
-      aiResponse = "";
-      for (const block of completion.content) {
-        if (block.type === "text") {
-          aiResponse += block.text;
-        }
-      }
-    }
-
-    return new Response(JSON.stringify({ ai: aiResponse }), {
-      headers: { "Content-Type": "application/json" }
+    // Body einlesen (Node.js Request)
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
     });
 
-  } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    req.on("end", async () => {
+      let parsed;
+      try {
+        parsed = JSON.parse(body || "{}");
+      } catch (e) {
+        res.statusCode = 400;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ error: "Invalid JSON body" }));
+        return;
+      }
+
+      const { text, model } = parsed;
+
+      if (!text) {
+        res.statusCode = 400;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ error: "No text provided" }));
+        return;
+      }
+
+      let aiResponse = "";
+
+      // -----------------------------
+      // OPENAI
+      // -----------------------------
+      if (model === "openai") {
+        const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+        const completion = await client.chat.completions.create({
+          model: "gpt-4.1",
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: text },
+          ],
+        });
+
+        aiResponse = completion.choices[0].message.content || "";
+      }
+
+      // -----------------------------
+      // ANTHROPIC
+      // -----------------------------
+      else {
+        const client = new Anthropic({
+          apiKey: process.env.ANTHROPIC_API_KEY,
+        });
+
+        const completion = await client.messages.create({
+          model: "claude-3-5-sonnet-latest",
+          max_tokens: 2000,
+          messages: [
+            { role: "user", content: SYSTEM_PROMPT + "\n\n" + text },
+          ],
+        });
+
+        aiResponse = "";
+        for (const block of completion.content) {
+          if (block.type === "text") {
+            aiResponse += block.text;
+          }
+        }
+      }
+
+      // -----------------------------
+      // JSON aus KI-Antwort extrahieren
+      // -----------------------------
+      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+
+      if (!jsonMatch) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ error: "KI lieferte kein gültiges JSON" }));
+        return;
+      }
+
+      let cleanJson = jsonMatch[0];
+
+      // JSON validieren
+      try {
+        JSON.parse(cleanJson);
+      } catch (e) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ error: "Ungültiges JSON aus KI" }));
+        return;
+      }
+
+      // Erfolgreiche Antwort
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(cleanJson);
+    });
+  } catch (err) {
+    res.statusCode = 500;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ error: err.message }));
   }
 }
