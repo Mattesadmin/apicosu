@@ -3,7 +3,10 @@ import { Copy, Download, FileUp, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { ApicosuModule } from "@/data/modules";
-import { callApiForm } from "@/lib/api";
+
+import { extractTextFromFile } from "@/utils/ocr";
+import { runErrorFinder } from "@/modules/error-finder";
+import { analyzeErrorWithAI } from "@/lib/aiErrorFinder";
 
 export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
   const Icon = module.icon;
@@ -20,12 +23,26 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
     setError(null);
 
     try {
-      const formData = new FormData();
-      if (file) formData.append("file", file);
-      formData.append("text", text);
+      let combined = text;
 
-      const data = await callApiForm(module.api, formData);
-      setResult(data);
+      // 1. Datei → OCR
+      if (file) {
+        const extracted = await extractTextFromFile(file);
+        combined += "\n" + extracted;
+      }
+
+      // 2. Lokale Analyse (Error Finder Modul)
+      const localAnalysis = await runErrorFinder({ combined });
+
+      // 3. KI-Analyse (ausgelagert in neue Datei)
+      const aiAnalysis = await analyzeErrorWithAI(combined, module.api); 
+     
+      // 4. Ergebnis kombinieren
+      setResult({
+        local: localAnalysis,
+        ai: aiAnalysis
+      });
+
     } catch (err: any) {
       setError(err.message || "Unbekannter Fehler");
     } finally {
