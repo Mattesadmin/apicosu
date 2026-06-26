@@ -381,3 +381,12 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
               >
                 <Copy className="h-4 w-4" />
                 Copy result
+              </Button>
+               <Button
+                 onClick={handleDownload}
+                 variant="outline"
+                 className="rounded-2xl border-[#2a2a2a] bg-[#101010] text-zinc-200 hover:bg-[#202020] hover:text-white"
+              >
+                 <Download className="h-4 w-4" />
+                 Download result
+              </Button>
