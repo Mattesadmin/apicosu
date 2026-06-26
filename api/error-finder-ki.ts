@@ -2,7 +2,7 @@ import { OpenAI } from "openai";
 import { Anthropic } from "@anthropic-ai/sdk";
 
 export const config = {
-  runtime: "node.js",
+  runtime: "nodejs",
 };
 
 const SYSTEM_PROMPT = `
@@ -48,6 +48,9 @@ export default async function handler(req: Request) {
 
     let aiResponse = "";
 
+    // -----------------------------
+    // OPENAI
+    // -----------------------------
     if (model === "openai") {
       const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -59,23 +62,37 @@ export default async function handler(req: Request) {
         ]
       });
 
-      aiResponse = completion.choices[0].message.content;
-    } else {
+      aiResponse = completion.choices[0].message.content || "";
+    }
+
+    // -----------------------------
+    // ANTHROPIC
+    // -----------------------------
+    else {
       const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
       const completion = await client.messages.create({
-        model: "claude-3.5-sonnet-latest",
+        model: "claude-3-5-sonnet-latest",
         max_tokens: 2000,
         messages: [
           { role: "user", content: SYSTEM_PROMPT + "\n\n" + text }
         ]
       });
 
-      let aiResponse = "";
-      
-      // Alle Blöcke durchgehen und nur Text-Blöcke sammeln
+      // ContentBlocks korrekt extrahieren
+      aiResponse = "";
       for (const block of completion.content) {
         if (block.type === "text") {
           aiResponse += block.text;
         }
       }
+    }
+
+    return new Response(JSON.stringify({ ai: aiResponse }), {
+      headers: { "Content-Type": "application/json" }
+    });
+
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+  }
+}
