@@ -46,6 +46,14 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
     }
   }
 
+  function handleReset() {
+    setFile(null);
+    setText("");
+    setResult(null);
+    setError(null);
+    setActiveTab("summary");
+  }
+
   function handleCopy() {
     if (!result) return;
     navigator.clipboard.writeText(JSON.stringify(result, null, 2));
@@ -161,6 +169,17 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
           >
             {loading ? "Analysiere..." : "Analyze"}
           </Button>
+
+          {/* RESET BUTTON – nur anzeigen, wenn ein Ergebnis existiert */}
+          {result && (
+            <Button
+              onClick={handleReset}
+              variant="outline"
+              className="mt-3 h-12 w-full rounded-2xl border-[#2a2a2a] bg-[#101010] text-zinc-200 hover:bg-[#202020] hover:text-white"
+            >
+              Neue Analyse
+            </Button>
+          )}
 
           {error && (
             <p className="mt-4 text-sm text-red-400">
