@@ -8,6 +8,183 @@ import { extractTextFromFile } from "@/utils/ocr";
 import { runErrorFinder } from "@/modules/error-finder";
 import { analyzeErrorWithAI } from "@/lib/aiErrorFinder";
 
+/* -------------------------------------------------------
+   1) TAB-KONFIGURATION FÜR ALLE MODULE
+------------------------------------------------------- */
+const TAB_CONFIG: Record<string, { id: string; label: string }[]> = {
+  "error-finder": [
+    { id: "summary", label: "Summary" },
+    { id: "root_cause", label: "Root Cause" },
+    { id: "technical_details", label: "Technical Details" },
+    { id: "solution_steps", label: "Solution Steps" },
+    { id: "hints", label: "Hints" },
+    { id: "risk", label: "Risk & Priority" },
+    { id: "recommended_actions", label: "Recommended Actions" }
+  ],
+
+  "customizing-analyzer": [
+    { id: "summary", label: "Summary" },
+    { id: "root_cause", label: "Root Cause" },
+    { id: "missing_settings", label: "Missing Settings" },
+    { id: "dependent_settings", label: "Dependent Settings" },
+    { id: "solution_steps", label: "Solution Steps" },
+    { id: "transport_notes", label: "Transport Notes" },
+    { id: "risk", label: "Risk & Priority" },
+    { id: "recommended_actions", label: "Recommended Actions" }
+  ],
+
+  "transport-impact": [
+    { id: "summary", label: "Summary" },
+    { id: "affected_objects", label: "Affected Objects" },
+    { id: "dependency_conflicts", label: "Conflicts" },
+    { id: "risk_analysis", label: "Risk Analysis" },
+    { id: "test_recommendations", label: "Test Recommendations" },
+    { id: "import_sequence", label: "Import Sequence" },
+    { id: "rollback_notes", label: "Rollback Notes" },
+    { id: "recommended_actions", label: "Recommended Actions" }
+  ],
+
+  "blueprint": [
+    { id: "summary", label: "Summary" },
+    { id: "process_flow", label: "Process Flow" },
+    { id: "roles", label: "Roles" },
+    { id: "fields", label: "Fields" },
+    { id: "customizing_references", label: "Customizing" },
+    { id: "open_points", label: "Open Points" },
+    { id: "recommended_actions", label: "Recommended Actions" }
+  ],
+
+  "testdata": [
+    { id: "summary", label: "Summary" },
+    { id: "tables", label: "Tables" },
+    { id: "fields", label: "Fields" },
+    { id: "constraints", label: "Constraints" },
+    { id: "generated_records", label: "Generated Records" },
+    { id: "relationships", label: "Relationships" },
+    { id: "recommended_actions", label: "Recommended Actions" }
+  ],
+
+  "training": [
+    { id: "summary", label: "Summary" },
+    { id: "target_audience", label: "Target Audience" },
+    { id: "prerequisites", label: "Prerequisites" },
+    { id: "step_by_step", label: "Steps" },
+    { id: "exercises", label: "Exercises" },
+    { id: "screenshots", label: "Screenshots" },
+    { id: "recommended_actions", label: "Recommended Actions" }
+  ]
+};
+
+/* -------------------------------------------------------
+   2) FELD-RENDERER FÜR ALLE MODULE
+------------------------------------------------------- */
+const FIELD_RENDERERS: Record<
+  string,
+  Record<string, (ai: any) => JSX.Element>
+> = {
+  "error-finder": {
+    summary: (ai) => (
+      <div className="space-y-4">
+        <p className="text-zinc-300 whitespace-pre-wrap">{ai.error_summary}</p>
+        <p className="text-zinc-400 italic">{ai.error_classification}</p>
+      </div>
+    ),
+    root_cause: (ai) => list(ai.root_cause),
+    technical_details: (ai) => list(ai.technical_details),
+    solution_steps: (ai) => list(ai.solution_steps),
+    hints: (ai) => (
+      <div className="space-y-6">
+        <div>
+          <h4 className="text-white font-semibold mb-2">Customizing Hints</h4>
+          {list(ai.customizing_hints)}
+        </div>
+        <div>
+          <h4 className="text-white font-semibold mb-2">ABAP Hints</h4>
+          {list(ai.abap_hints)}
+        </div>
+      </div>
+    ),
+    risk: (ai) => (
+      <div className="space-y-4">
+        <p className="text-zinc-300">{ai.risk_assessment}</p>
+        <p className="text-[#0A6ED1] font-semibold">{ai.priority}</p>
+      </div>
+    ),
+    recommended_actions: (ai) => list(ai.recommended_actions)
+  },
+
+  "customizing-analyzer": {
+    summary: (ai) => (
+      <div className="space-y-4">
+        <p className="text-zinc-300 whitespace-pre-wrap">{ai.customizing_summary}</p>
+        <p className="text-zinc-400 italic">{ai.customizing_area}</p>
+      </div>
+    ),
+    root_cause: (ai) => list(ai.root_cause),
+    missing_settings: (ai) => list(ai.missing_settings),
+    dependent_settings: (ai) => list(ai.dependent_settings),
+    solution_steps: (ai) => list(ai.solution_steps),
+    transport_notes: (ai) => list(ai.transport_notes),
+    risk: (ai) => <p className="text-zinc-300">{ai.risk_assessment}</p>,
+    recommended_actions: (ai) => list(ai.recommended_actions)
+  },
+
+  "transport-impact": {
+    summary: (ai) => <p className="text-zinc-300 whitespace-pre-wrap">{ai.transport_summary}</p>,
+    affected_objects: (ai) => list(ai.affected_objects),
+    dependency_conflicts: (ai) => list(ai.dependency_conflicts),
+    risk_analysis: (ai) => list(ai.risk_analysis),
+    test_recommendations: (ai) => list(ai.test_recommendations),
+    import_sequence: (ai) => list(ai.import_sequence),
+    rollback_notes: (ai) => list(ai.rollback_notes),
+    recommended_actions: (ai) => list(ai.recommended_actions)
+  },
+
+  "blueprint": {
+    summary: (ai) => <p className="text-zinc-300 whitespace-pre-wrap">{ai.process_summary}</p>,
+    process_flow: (ai) => list(ai.process_flow),
+    roles: (ai) => list(ai.roles),
+    fields: (ai) => list(ai.fields),
+    customizing_references: (ai) => list(ai.customizing_references),
+    open_points: (ai) => list(ai.open_points),
+    recommended_actions: (ai) => list(ai.recommended_actions)
+  },
+
+  "testdata": {
+    summary: (ai) => <p className="text-zinc-300 whitespace-pre-wrap">{ai.data_summary}</p>,
+    tables: (ai) => list(ai.tables),
+    fields: (ai) => list(ai.fields),
+    constraints: (ai) => list(ai.constraints),
+    generated_records: (ai) => list(ai.generated_records),
+    relationships: (ai) => list(ai.relationships),
+    recommended_actions: (ai) => list(ai.recommended_actions)
+  },
+
+  "training": {
+    summary: (ai) => <p className="text-zinc-300 whitespace-pre-wrap">{ai.training_summary}</p>,
+    target_audience: (ai) => list(ai.target_audience),
+    prerequisites: (ai) => list(ai.prerequisites),
+    step_by_step: (ai) => list(ai.step_by_step),
+    exercises: (ai) => list(ai.exercises),
+    screenshots: (ai) => list(ai.screenshots),
+    recommended_actions: (ai) => list(ai.recommended_actions)
+  }
+};
+
+/* Hilfsfunktion */
+function list(items: string[] = []) {
+  return (
+    <ul className="list-disc ml-5 space-y-2">
+      {items.map((item, idx) => (
+        <li key={idx}>{item}</li>
+      ))}
+    </ul>
+  );
+}
+
+/* -------------------------------------------------------
+   3) TEMPLATE-KOMPONENTE
+------------------------------------------------------- */
 export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
   const Icon = module.icon;
 
@@ -17,6 +194,9 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("summary");
+
+  const tabs = TAB_CONFIG[module.api] || [];
+  const renderers = FIELD_RENDERERS[module.api] || {};
 
   async function handleAnalyze() {
     setLoading(true);
@@ -31,7 +211,12 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
         combined += "\n" + extracted;
       }
 
-      const localAnalysis = await runErrorFinder({ combined });
+      let localAnalysis = null;
+
+      if (module.api === "error-finder") {
+        localAnalysis = await runErrorFinder({ combined });
+      }
+
       const aiAnalysis = await analyzeErrorWithAI(combined, module.api);
 
       setResult({
@@ -73,16 +258,6 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
     a.click();
     URL.revokeObjectURL(url);
   }
-
-  const tabs = [
-    { id: "summary", label: "Summary" },
-    { id: "root_cause", label: "Root Cause" },
-    { id: "technical_details", label: "Technical Details" },
-    { id: "solution_steps", label: "Solution Steps" },
-    { id: "hints", label: "Hints" },
-    { id: "risk", label: "Risk & Priority" },
-    { id: "recommended_actions", label: "Recommended Actions" }
-  ];
 
   const ai = result?.ai?.raw || null;
 
@@ -170,7 +345,7 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
             {loading ? "Analysiere..." : "Analyze"}
           </Button>
 
-          {/* RESET BUTTON – nur anzeigen, wenn ein Ergebnis existiert */}
+          {/* RESET BUTTON */}
           {result && (
             <Button
               onClick={handleReset}
@@ -206,125 +381,3 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
               >
                 <Copy className="h-4 w-4" />
                 Copy result
-              </Button>
-
-              <Button
-                onClick={handleDownload}
-                variant="outline"
-                className="rounded-2a border-[#2a2a2a] bg-[#101010] text-zinc-200 hover:bg-[#202020] hover:text-white"
-              >
-                <Download className="h-4 w-4" />
-                Download result
-              </Button>
-            </div>
-          </div>
-
-          <div className="min-h-[410px] rounded-2xl border border-[#2a2a2a] bg-[#101010] p-5 shadow-inner shadow-black/30">
-
-            {!result && (
-              <p className="text-sm leading-7 text-zinc-500">
-                Analysis output will appear here.
-              </p>
-            )}
-
-            {result && ai && (
-              <>
-
-                {/* TAB HEADERS */}
-                <div className="flex gap-3 border-b border-[#2a2a2a] pb-3 mb-5 overflow-x-auto">
-                  {tabs.map((t) => (
-                    <button
-                      key={t.id}
-                      onClick={() => setActiveTab(t.id)}
-                      className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
-                        activeTab === t.id
-                          ? "bg-[#0A6ED1] text-white"
-                          : "bg-[#0f0f0f] text-zinc-400 hover:text-white"
-                      }`}
-                    >
-                      {t.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* TAB CONTENT */}
-                <div className="rounded-xl border border-[#2a2a2a] bg-[#0f0f0f] p-5 shadow-inner shadow-black/20">
-
-                  {activeTab === "summary" && (
-                    <div className="space-y-4">
-                      <p className="text-zinc-300 whitespace-pre-wrap">{ai.error_summary}</p>
-                      <p className="text-zinc-400 italic">{ai.error_classification}</p>
-                    </div>
-                  )}
-
-                  {activeTab === "root_cause" && (
-                    <ul className="list-disc ml-5 space-y-2">
-                      {ai.root_cause?.map((item: string, idx: number) => (
-                        <li key={idx}>{item}</li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {activeTab === "technical_details" && (
-                    <ul className="list-disc ml-5 space-y-2">
-                      {ai.technical_details?.map((item: string, idx: number) => (
-                        <li key={idx}>{item}</li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {activeTab === "solution_steps" && (
-                    <ul className="list-disc ml-5 space-y-2">
-                      {ai.solution_steps?.map((item: string, idx: number) => (
-                        <li key={idx}>{item}</li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {activeTab === "hints" && (
-                    <div className="space-y-6">
-                      <div>
-                        <h4 className="text-white font-semibold mb-2">Customizing Hints</h4>
-                        <ul className="list-disc ml-5 space-y-2">
-                          {ai.customizing_hints?.map((item: string, idx: number) => (
-                            <li key={idx}>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div>
-                        <h4 className="text-white font-semibold mb-2">ABAP Hints</h4>
-                        <ul className="list-disc ml-5 space-y-2">
-                          {ai.abap_hints?.map((item: string, idx: number) => (
-                            <li key={idx}>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
-
-                  {activeTab === "risk" && (
-                    <div className="space-y-4">
-                      <p className="text-zinc-300">{ai.risk_assessment}</p>
-                      <p className="text-[#0A6ED1] font-semibold">{ai.priority}</p>
-                    </div>
-                  )}
-
-                  {activeTab === "recommended_actions" && (
-                    <ul className="list-disc ml-5 space-y-2">
-                      {ai.recommended_actions?.map((item: string, idx: number) => (
-                        <li key={idx}>{item}</li>
-                      ))}
-                    </ul>
-                  )}
-
-                </div>
-              </>
-            )}
-
-          </div>
-        </section>
-      </div>
-    </section>
-  );
-};
