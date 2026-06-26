@@ -16,6 +16,7 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("summary");
 
   async function handleAnalyze() {
     setLoading(true);
@@ -64,6 +65,18 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
     a.click();
     URL.revokeObjectURL(url);
   }
+
+  const tabs = [
+    { id: "summary", label: "Summary" },
+    { id: "root_cause", label: "Root Cause" },
+    { id: "technical_details", label: "Technical Details" },
+    { id: "solution_steps", label: "Solution Steps" },
+    { id: "hints", label: "Hints" },
+    { id: "risk", label: "Risk & Priority" },
+    { id: "recommended_actions", label: "Recommended Actions" }
+  ];
+
+  const ai = result?.ai?.raw || null;
 
   return (
     <section className="relative mx-auto max-w-[1200px] px-5 py-10 md:px-8 md:py-16">
@@ -195,52 +208,99 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
               </p>
             )}
 
-            {result && (
-              <div className="space-y-10 text-sm leading-7 text-zinc-300">
+            {result && ai && (
+              <>
 
-                {/* Lokale Analyse */}
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-3">Local Analysis</h3>
-                  <pre className="whitespace-pre-wrap bg-[#0f0f0f] p-4 rounded-xl border border-[#2a2a2a]">
-                    {JSON.stringify(result.local, null, 2)}
-                  </pre>
+                {/* TAB HEADERS */}
+                <div className="flex gap-3 border-b border-[#2a2a2a] pb-3 mb-5 overflow-x-auto">
+                  {tabs.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setActiveTab(t.id)}
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
+                        activeTab === t.id
+                          ? "bg-[#0A6ED1] text-white"
+                          : "bg-[#0f0f0f] text-zinc-400 hover:text-white"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
                 </div>
 
-                {/* KI-Analyse */}
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">AI Analysis</h3>
+                {/* TAB CONTENT */}
+                <div className="rounded-xl border border-[#2a2a2a] bg-[#0f0f0f] p-5 shadow-inner shadow-black/20">
 
-                  {result.ai?.error && !result.ai?.raw && (
-                    <p className="text-red-400">{result.ai.error}</p>
-                  )}
-
-                  {result.ai?.raw && (
+                  {activeTab === "summary" && (
                     <div className="space-y-4">
-                      {Object.entries(result.ai.raw).map(([key, value]) => (
-                        <div
-                          key={key}
-                          className="rounded-xl border border-[#2a2a2a] bg-[#0f0f0f] p-4 shadow-inner shadow-black/20"
-                        >
-                          <h4 className="text-lg font-semibold text-white mb-2 capitalize">
-                            {key.replace(/_/g, " ")}
-                          </h4>
-
-                          {Array.isArray(value) ? (
-                            <ul className="list-disc ml-5 space-y-1">
-                              {value.map((item: string, idx: number) => (
-                                <li key={idx}>{item}</li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-zinc-300 whitespace-pre-wrap">{value}</p>
-                          )}
-                        </div>
-                      ))}
+                      <p className="text-zinc-300 whitespace-pre-wrap">{ai.error_summary}</p>
+                      <p className="text-zinc-400 italic">{ai.error_classification}</p>
                     </div>
                   )}
-                </div>
 
-              </div>
+                  {activeTab === "root_cause" && (
+                    <ul className="list-disc ml-5 space-y-2">
+                      {ai.root_cause?.map((item: string, idx: number) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {activeTab === "technical_details" && (
+                    <ul className="list-disc ml-5 space-y-2">
+                      {ai.technical_details?.map((item: string, idx: number) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {activeTab === "solution_steps" && (
+                    <ul className="list-disc ml-5 space-y-2">
+                      {ai.solution_steps?.map((item: string, idx: number) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {activeTab === "hints" && (
+                    <div className="space-y-6">
+                      <div>
+                        <h4 className="text-white font-semibold mb-2">Customizing Hints</h4>
+                        <ul className="list-disc ml-5 space-y-2">
+                          {ai.customizing_hints?.map((item: string, idx: number) => (
+                            <li key={idx}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div>
+                        <h4 className="text-white font-semibold mb-2">ABAP Hints</h4>
+                        <ul className="list-disc ml-5 space-y-2">
+                          {ai.abap_hints?.map((item: string, idx: number) => (
+                            <li key={idx}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "risk" && (
+                    <div className="space-y-4">
+                      <p className="text-zinc-300">{ai.risk_assessment}</p>
+                      <p className="text-[#0A6ED1] font-semibold">{ai.priority}</p>
+                    </div>
+                  )}
+
+                  {activeTab === "recommended_actions" && (
+                    <ul className="list-disc ml-5 space-y-2">
+                      {ai.recommended_actions?.map((item: string, idx: number) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                </div>
+              </>
             )}
 
           </div>
@@ -249,4 +309,3 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
     </section>
   );
 };
-
