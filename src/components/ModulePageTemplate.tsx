@@ -25,19 +25,14 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
     try {
       let combined = text;
 
-      // 1. Datei → OCR
       if (file) {
         const extracted = await extractTextFromFile(file);
         combined += "\n" + extracted;
       }
 
-      // 2. Lokale Analyse
       const localAnalysis = await runErrorFinder({ combined });
-
-      // 3. KI-Analyse
       const aiAnalysis = await analyzeErrorWithAI(combined, module.api);
 
-      // 4. Ergebnis kombinieren
       setResult({
         local: localAnalysis,
         ai: aiAnalysis
@@ -72,6 +67,7 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
 
   return (
     <section className="relative mx-auto max-w-[1200px] px-5 py-10 md:px-8 md:py-16">
+
       {/* HEADER */}
       <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div>
@@ -92,7 +88,7 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
 
       {/* GRID */}
       <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
-        
+
         {/* LEFT SIDE – INPUT */}
         <section className="rounded-2xl border border-[#2a2a2a] bg-[#181818] p-5 shadow-2xl shadow-black/35 md:p-6">
           <div className="mb-6">
@@ -200,11 +196,11 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
             )}
 
             {result && (
-              <div className="space-y-6 text-sm leading-7 text-zinc-300">
+              <div className="space-y-10 text-sm leading-7 text-zinc-300">
 
                 {/* Lokale Analyse */}
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Local Analysis</h3>
+                  <h3 className="text-xl font-semibold text-white mb-3">Local Analysis</h3>
                   <pre className="whitespace-pre-wrap bg-[#0f0f0f] p-4 rounded-xl border border-[#2a2a2a]">
                     {JSON.stringify(result.local, null, 2)}
                   </pre>
@@ -212,18 +208,35 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
 
                 {/* KI-Analyse */}
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">AI Analysis</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">AI Analysis</h3>
 
-                  {/* KI-Fehler */}
                   {result.ai?.error && !result.ai?.raw && (
                     <p className="text-red-400">{result.ai.error}</p>
                   )}
 
-                  {/* KI JSON */}
                   {result.ai?.raw && (
-                    <pre className="whitespace-pre-wrap bg-[#0f0f0f] p-4 rounded-xl border border-[#2a2a2a]">
-                      {JSON.stringify(result.ai.raw, null, 2)}
-                    </pre>
+                    <div className="space-y-4">
+                      {Object.entries(result.ai.raw).map(([key, value]) => (
+                        <div
+                          key={key}
+                          className="rounded-xl border border-[#2a2a2a] bg-[#0f0f0f] p-4 shadow-inner shadow-black/20"
+                        >
+                          <h4 className="text-lg font-semibold text-white mb-2 capitalize">
+                            {key.replace(/_/g, " ")}
+                          </h4>
+
+                          {Array.isArray(value) ? (
+                            <ul className="list-disc ml-5 space-y-1">
+                              {value.map((item: string, idx: number) => (
+                                <li key={idx}>{item}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-zinc-300 whitespace-pre-wrap">{value}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
 
@@ -236,3 +249,4 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
     </section>
   );
 };
+
