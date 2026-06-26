@@ -1,17 +1,12 @@
-import Tesseract from "tesseract.js";
+// src/utils/ocr.ts
 
 export async function extractTextFromFile(file: File): Promise<string> {
-  if (file.type.startsWith("image/")) {
-    const buffer = await file.arrayBuffer();
-    const { data } = await Tesseract.recognize(buffer, "deu+eng", {
-      logger: () => {}
-    });
-    return data.text;
-  }
+  // Dynamischer Import → wird NICHT in den Server-Build gepackt
+  const Tesseract = await import("tesseract.js");
 
-  if (file.type.startsWith("text/")) {
-    return await file.text();
-  }
+  const result = await Tesseract.recognize(file, "eng", {
+    logger: () => {}
+  });
 
-  return "[Binary file detected – no text extracted]";
+  return result.data.text || "";
 }
