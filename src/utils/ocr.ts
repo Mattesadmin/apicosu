@@ -1,12 +1,15 @@
 // src/utils/ocr.ts
 
+// Diese Datei wird von Vercel gebundled – also KEIN Tesseract import hier!
+
 export async function extractTextFromFile(file: File): Promise<string> {
-  // Dynamischer Import → wird NICHT in den Server-Build gepackt
-  const Tesseract = await import("tesseract.js");
+  // Nur im Browser laden
+  if (typeof window === "undefined") {
+    return "";
+  }
 
-  const result = await Tesseract.recognize(file, "eng", {
-    logger: () => {}
-  });
+  // Dynamisch die client-only Version laden
+  const { extractTextFromFile: clientFn } = await import("./ocr.client");
 
-  return result.data.text || "";
+  return clientFn(file);
 }
