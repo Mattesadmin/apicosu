@@ -64,21 +64,18 @@ export default async function handler(req: Request) {
       const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
       const completion = await client.messages.create({
-        model: "claude-3.5-sonnet",
-        max_tokens: 1200,
+        model: "claude-3.5-sonnet-latest",
+        max_tokens: 2000,
         messages: [
           { role: "user", content: SYSTEM_PROMPT + "\n\n" + text }
         ]
       });
 
-      aiResponse = completion.content[0].text;
-    }
-
-    return new Response(JSON.stringify({ ai: aiResponse }), {
-      headers: { "Content-Type": "application/json" }
-    });
-
-  } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
-  }
-}
+      let aiResponse = "";
+      
+      // Alle Blöcke durchgehen und nur Text-Blöcke sammeln
+      for (const block of completion.content) {
+        if (block.type === "text") {
+          aiResponse += block.text;
+        }
+      }
