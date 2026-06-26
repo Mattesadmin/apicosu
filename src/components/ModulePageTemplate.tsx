@@ -382,11 +382,59 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
                 <Copy className="h-4 w-4" />
                 Copy result
               </Button>
-               <Button
-                 onClick={handleDownload}
-                 variant="outline"
-                 className="rounded-2xl border-[#2a2a2a] bg-[#101010] text-zinc-200 hover:bg-[#202020] hover:text-white"
+
+              <Button
+                onClick={handleDownload}
+                variant="outline"
+                className="rounded-2xl border-[#2a2a2a] bg-[#101010] text-zinc-200 hover:bg-[#202020] hover:text-white"
               >
-                 <Download className="h-4 w-4" />
-                 Download result
+                <Download className="h-4 w-4" />
+                Download result
               </Button>
+            </div>
+          </div>
+
+          <div className="min-h-[410px] rounded-2xl border border-[#2a2a2a] bg-[#101010] p-5 shadow-inner shadow-black/30">
+
+            {!result && (
+              <p className="text-sm leading-7 text-zinc-500">
+                Analysis output will appear here.
+              </p>
+            )}
+
+            {result && ai && (
+              <>
+                {/* TAB HEADERS */}
+                <div className="flex gap-3 border-b border-[#2a2a2a] pb-3 mb-5 overflow-x-auto">
+                  {tabs.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setActiveTab(t.id)}
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
+                        activeTab === t.id
+                          ? "bg-[#0A6ED1] text-white"
+                          : "bg-[#0f0f0f] text-zinc-400 hover:text-white"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* TAB CONTENT */}
+                <div className="rounded-xl border border-[#2a2a2a] bg-[#0f0f0f] p-5 shadow-inner shadow-black/20">
+                  {renderers[activeTab] ? (
+                    renderers[activeTab](ai)
+                  ) : (
+                    <p className="text-zinc-500">No data available.</p>
+                  )}
+                </div>
+              </>
+            )}
+
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+};
