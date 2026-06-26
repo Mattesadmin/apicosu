@@ -1,3 +1,4 @@
+
 import { OpenAI } from "openai";
 import { Anthropic } from "@anthropic-ai/sdk";
 
@@ -28,107 +29,92 @@ Liefere IMMER eine präzise, strukturierte und professionelle Analyse im folgend
 
 export default async function handler(req, res) {
   try {
-    // Body einlesen (Node.js Request)
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk;
-    });
+    // Vercel liefert den Body direkt in req.body
+    const { text, model } = req.body || {};
 
-    req.on("end", async () => {
-      let parsed;
-      try {
-        parsed = JSON.parse(body || "{}");
-      } catch (e) {
-        res.statusCode = 400;
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify({ error: "Invalid JSON body" }));
-        return;
-      }
+    if (!text) {
+      res.status(400).json({ error: "No text provided" });
+      return;
+    }
 
-      const { text, model } = parsed;
+    let aiResponse = "";
 
-      if (!text) {
-        res.statusCode = 400;
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify({ error: "No text provided" }));
-        return;
-      }
+    // -----------------------------
+    // OPENAI
+    // -----------------------------
+    if (model === "openai") {
+      const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-      let aiResponse = "";
+      const completion = await client.chat.completions.create({
+        model: "gpt-4.1",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: text }
+        ]
+      });
 
-      // -----------------------------
-      // OPENAI
-      // -----------------------------
-      if (model === "openai") {
-        const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      aiResponse = completion.choices[0].message.content || "";
+    }
 
-        const completion = await client.chat.completions.create({
-          model: "gpt-4.1",
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: text },
-          ],
-        });
+    // -----------------------------
+    // ANTHROPIC
+    // -----------------------------
+    else {
+      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-        aiResponse = completion.choices[0].message.content || "";
-      }
+      const completion = await client.messages.create({
+        model: "claude-3-5-sonnet-latest",
+        max_tokens: 2000,
+        messages: [
+          { role: "user", content: SYSTEM_PROMPT + "\n\n" + text }
+        ]
+      });
 
-      // -----------------------------
-      // ANTHROPIC
-      // -----------------------------
-      else {
-        const client = new Anthropic({
-          apiKey: process.env.ANTHROPIC_API_KEY,
-        });
-
-        const completion = await client.messages.create({
-          model: "claude-3-5-sonnet-latest",
-          max_tokens: 2000,
-          messages: [
-            { role: "user", content: SYSTEM_PROMPT + "\n\n" + text },
-          ],
-        });
-
-        aiResponse = "";
-        for (const block of completion.content) {
-          if (block.type === "text") {
-            aiResponse += block.text;
-          }
+      aiResponse = "";
+      for (const block of completion.content) {
+        if (block.type === "text") {
+          aiResponse += block.text;
         }
       }
+    }
 
-      // -----------------------------
-      // JSON aus KI-Antwort extrahieren
-      // -----------------------------
-      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+    // -----------------------------
+    // KI-Antwort kann bereits JSON sein
+    // -----------------------------
+    if (typeof aiResponse === "object") {
+      res.status(200).json(aiResponse);
+      return;
+    }
 
-      if (!jsonMatch) {
-        res.statusCode = 500;
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify({ error: "KI lieferte kein gültiges JSON" }));
-        return;
-      }
+    // -----------------------------
+    // Falls KI Text liefert → JSON extrahieren
+    // -----------------------------
+    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
 
-      let cleanJson = jsonMatch[0];
+    if (!jsonMatch) {
+      res.status(500).json({
+        error: "KI lieferte kein gültiges JSON",
+        raw: aiResponse
+      });
+      return;
+    }
 
-      // JSON validieren
-      try {
-        JSON.parse(cleanJson);
-      } catch (e) {
-        res.statusCode = 500;
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify({ error: "Ungültiges JSON aus KI" }));
-        return;
-      }
+    const cleanJson = jsonMatch[0];
 
-      // Erfolgreiche Antwort
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.end(cleanJson);
-    });
+    // JSON validieren
+    try {
+      const parsed = JSON.parse(cleanJson);
+      res.status(200).json(parsed);
+      return;
+    } catch (e) {
+      res.status(500).json({
+        error: "Ungültiges JSON aus KI",
+        raw: aiResponse
+      });
+      return;
+    }
+
   } catch (err) {
-    res.statusCode = 500;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: err.message }));
+    res.status(500).json({ error: err.message });
   }
 }
