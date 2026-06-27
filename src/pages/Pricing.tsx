@@ -42,8 +42,8 @@ const Pricing = () => (
           <p className="mt-4 max-w-2xl text-base leading-8 text-zinc-300">Wählen Sie das passende Modell für SAP-Analyse, Dokumentation und Beratungsunterstützung.</p>
         </div>
         <div className="flex w-fit rounded-full border border-[#2a2a2a] bg-[#181818] p-1 shadow-xl shadow-black/25">
-          <button className="rounded-full bg-[#0A6ED1] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-[#0A6ED1]/20">Monthly</button>
-          <button className="rounded-full px-4 py-2 text-sm font-semibold text-zinc-400 hover:text-white">Yearly</button>
+          <button className="rounded-full bg-[#0A6ED1] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-[#0A6ED1]/20">Monat</button>
+          <button className="rounded-full px-4 py-2 text-sm font-semibold text-zinc-400 hover:text-white">Jahr</button>
         </div>
       </div>
 
@@ -70,7 +70,7 @@ const Pricing = () => (
               ))}
             </ul>
             <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] font-semibold text-white shadow-lg shadow-[#0A6ED1]/25 hover:bg-[#0b7ce8]">
-              Subscribe now
+              Plan auswählen
             </Button>
           </article>
         ))}

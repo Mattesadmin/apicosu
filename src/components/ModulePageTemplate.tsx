@@ -187,8 +187,40 @@ function list(items: string[] = []) {
 ------------------------------------------------------- */
 export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
   const Icon = module.icon;
+  const [files, setFiles] = useState<File[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
-  const [file, setFile] = useState<File | null>(null);
+  const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+  const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "application/pdf"];
+
+  function handleFiles(selected: File[]) {
+    let error = "";
+
+    const valid = selected.filter((file) => {
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        error = "Ungültiger Dateityp. Erlaubt: PNG, JPG, JPEG, PDF.";
+        return false;
+      }
+
+      if (file.size > MAX_SIZE) {
+        error = `Datei zu groß: ${file.name} (max. 10 MB)`;
+        return false;
+      }
+
+      return true;
+    });
+
+    if (error) {
+      setUploadError(error);
+      return;
+    }
+
+    setUploadError("");
+    setFiles((prev) => [...prev, ...valid]);
+  }
+
+  
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -206,7 +238,7 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
     try {
       let combined = text;
 
-      if (file) {
+      for (const file of files) {
         const extracted = await extractTextFromFile(file);
         combined += "\n" + extracted;
       }
@@ -296,30 +328,99 @@ export const ModulePageTemplate = ({ module }: { module: ApicosuModule }) => {
             </p>
           </div>
 
-          {/* FILE UPLOAD */}
-          <div className="rounded-2xl border border-dashed border-[#0A6ED1]/35 bg-[#0A6ED1]/8 p-8 text-center shadow-inner shadow-black/20">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0A6ED1]/15 text-[#70bdff]">
+          {/* FILE UPLOAD – PREMIUM VERSION */}
+          <div
+            className={`rounded-2xl border border-dashed ${
+              isDragging ? "border-[#0A6ED1]" : "border-[#0A6ED1]/35"
+            } bg-[#0A6ED1]/8 p-8 text-center shadow-inner shadow-black/20 transition`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragging(false);
+
+              const dropped = Array.from(e.dataTransfer.files || []);
+              handleFiles(dropped);
+            }}
+          >
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0A6ED1]/15 text-[#     70bdff]">
               <UploadCloud className="h-7 w-7" />
             </div>
-            <p className="text-base font-semibold text-white">Drag & Drop files here</p>
+ 
+            <p className="text-base font-semibold text-white">
+              Drag & Drop files here
+            </p>
             <p className="mt-2 text-sm leading-6 text-zinc-400">
-              SAP-Screenshots, Exporte, Protokolle oder Dokumente auswählen.
+              PNG, JPG, JPEG oder PDF (max. 10 MB pro Datei)
             </p>
 
-            <label className="mt-5 inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-[#0A6ED1] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#0A6ED1]/25 transition hover:bg-[#0b7ce8]">
+            <label className="mt-5 inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-[#0A6ED1] px-4    py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#0A6ED1]/25 transition hover:bg-[#0b7ce8]">
               <FileUp className="h-4 w-4" />
               File select
               <input
                 type="file"
+                multiple
                 className="sr-only"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  const selected = Array.from(e.target.files || []);
+                  handleFiles(selected);
+                }}
               />
             </label>
 
-            {file && (
-              <p className="mt-3 text-sm text-zinc-300">
-                Selected: <span className="font-semibold">{file.name}</span>
-              </p>
+            {/* ERROR MESSAGE */}
+            {uploadError && (
+              <p className="mt-4 text-sm text-red-400">{uploadError}</p>
+            )}
+
+            {/* FILE LIST WITH THUMBNAILS */}
+            {files.length > 0 && (
+              <ul className="mt-6 space-y-3 text-sm text-zinc-300">
+                {files.map((file, idx) => {
+                  const isImage = file.type.startsWith("image/");
+                  const isPDF = file.type === "application/pdf";
+     
+                  return (
+                    <li
+                      key={idx}
+                      className="flex items-center justify-between rounded-xl bg-[#0f0f0f] px-3 py-2 border border-[#2a2a2a]"
+                    >
+                      <div className="flex items-center gap-3">
+                        {/* THUMBNAIL */}
+                        {isImage && (
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={file.name}
+                            className="h-10 w-10 rounded-lg object-cover border border-[#2a2a2a]"
+                          />
+                        )}
+
+                        {isPDF && (
+                          <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-red-600/20 border border- red-600/40 text-red-400 font-bold">
+                            PDF
+                          </div>
+                        )}
+
+                        {/* FILE NAME */}
+                        <span className="truncate max-w-[160px]">{file.name}</span>
+                      </div>
+
+                      {/* REMOVE BUTTON */}
+                      <button
+                        className="text-red-400 hover:text-red-300 text-xs"
+                        onClick={() =>
+                          setFiles((prev) => prev.filter((_, i) => i !== idx))
+                        }
+                      >
+                        Remove
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             )}
           </div>
 
