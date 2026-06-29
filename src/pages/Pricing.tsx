@@ -1,108 +1,198 @@
+import { useState } from "react";
 import { Check, Minus } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 
-const tiers = [
-  {
-    name: "Free",
-    price: "€0",
-    description: "Für erste SAP-Analysen und Evaluation.",
-    features: ["Basis-Modulzugriff", "Manuelle Texteingabe", "Standard-Ausgabe"],
-  },
-  {
-    name: "Pro",
-    price: "€49",
-    description: "Für SAP-Berater mit regelmäßigem Analysebedarf.",
-    features: ["Alle Module", "Upload-Bereiche", "Copy & Download UI", "Paywall-freie Nutzung"],
-    highlighted: true,
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    description: "Für Beratungsteams, Rollouts und SAP-Projektorganisationen.",
-    features: ["Team-Verwaltung", "Zentrale Abrechnung", "Priorisierte Integration", "Governance-Struktur"],
-  },
-];
+const Pricing = () => {
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
 
-const comparison = [
-  { feature: "Error Finder", free: true, pro: true, enterprise: true },
-  { feature: "Customizing Analyzer", free: false, pro: true, enterprise: true },
-  { feature: "Transport Impact Analyzer", free: false, pro: true, enterprise: true },
-  { feature: "Blueprint & Training Generator", free: false, pro: true, enterprise: true },
-  { feature: "Team billing", free: false, pro: false, enterprise: true },
-];
+  // Monatspreise
+  const prices = {
+    free: 0,
+    basic: 19,
+    pro: 49,
+    team: 199,
+    enterprise15: 449,
+    enterprise20: 699,
+  };
 
-const Pricing = () => (
-  <AppLayout>
-    <section className="relative mx-auto max-w-[1200px] px-5 py-10 md:px-8 md:py-16">
-      <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.22em] text-[#70bdff]">Pricing</p>
-          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-white md:text-5xl">Subscription plans for APICOSU</h1>
-          <p className="mt-4 max-w-2xl text-base leading-8 text-zinc-300">Wählen Sie das passende Modell für SAP-Analyse, Dokumentation und Beratungsunterstützung.</p>
+  // Jahresabo: rabattierter Monatsbetrag (10 % Rabatt)
+  const yearlyPrice = (monthly: number) =>
+    Math.round(monthly * 0.9);
+
+  const displayPrice = (monthly: number) => {
+    if (billingCycle === "monthly") {
+      return `€${monthly} / Monat`;
+    }
+    const discounted = yearlyPrice(monthly);
+    return `€${discounted} / Monat (statt €${monthly})`;
+  };
+
+  return (
+    <AppLayout>
+      <section className="relative mx-auto max-w-[1200px] px-5 py-10 md:px-8 md:py-16">
+
+        {/* HEADER */}
+        <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.22em] text-[#70bdff]">
+              Pricing
+            </p>
+            <h1 className="text-4xl font-semibold tracking-[-0.04em] text-white md:text-5xl">
+              Subscription plans for APICOSU
+            </h1>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-zinc-300">
+              Wählen Sie das passende Modell für SAP‑Analyse, Dokumentation und Beratungsunterstützung.
+            </p>
+          </div>
+
+          {/* MONTH / YEAR SWITCH */}
+          <div className="flex w-fit rounded-full border border-[#2a2a2a] bg-[#181818] p-1 shadow-xl shadow-black/25">
+            <button
+              onClick={() => setBillingCycle("monthly")}
+              className={`rounded-full px-4 py-2 text-sm font-semibold ${
+                billingCycle === "monthly"
+                  ? "bg-[#0A6ED1] text-white shadow-lg shadow-[#0A6ED1]/20"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Monat
+            </button>
+            <button
+              onClick={() => setBillingCycle("yearly")}
+              className={`rounded-full px-4 py-2 text-sm font-semibold ${
+                billingCycle === "yearly"
+                  ? "bg-[#0A6ED1] text-white shadow-lg shadow-[#0A6ED1]/20"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Jahr (-10%)
+            </button>
+          </div>
         </div>
-        <div className="flex w-fit rounded-full border border-[#2a2a2a] bg-[#181818] p-1 shadow-xl shadow-black/25">
-          <button className="rounded-full bg-[#0A6ED1] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-[#0A6ED1]/20">Monat</button>
-          <button className="rounded-full px-4 py-2 text-sm font-semibold text-zinc-400 hover:text-white">Jahr</button>
-        </div>
-      </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        {tiers.map((tier) => (
-          <article key={tier.name} className={`rounded-2xl border p-6 shadow-2xl shadow-black/35 ${tier.highlighted ? "border-[#0A6ED1]/50 bg-[#0A6ED1]/10" : "border-[#2a2a2a] bg-[#181818]"}`}>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-semibold tracking-tight text-white">{tier.name}</h2>
-                <p className="mt-2 text-sm leading-6 text-zinc-400">{tier.description}</p>
-              </div>
-              {tier.highlighted && <span className="rounded-full bg-[#0A6ED1] px-3 py-1 text-xs font-semibold text-white">Popular</span>}
-            </div>
+        {/* PLANS */}
+        <div className="grid gap-4 lg:grid-cols-5">
+
+          {/* FREE */}
+          <article className="rounded-2xl border border-[#2a2a2a] bg-[#181818] p-6 shadow-2xl shadow-black/35">
+            <h2 className="text-2xl font-semibold text-white">Free</h2>
+            <p className="mt-2 text-sm text-zinc-400">Für erste SAP‑Analysen und Evaluation.</p>
             <div className="mt-6 flex items-end gap-2">
-              <span className="text-4xl font-semibold tracking-tight text-white">{tier.price}</span>
-              {tier.price !== "Custom" && <span className="pb-1 text-sm text-zinc-500">/month</span>}
+              <span className="text-4xl font-semibold text-white">€0</span>
+              <span className="pb-1 text-sm text-zinc-500">/Monat</span>
             </div>
-            <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6">
-              {tier.features.map((feature) => (
-                <li key={feature} className="flex gap-3 text-sm text-zinc-300">
-                  <Check className="h-4 w-4 shrink-0 text-[#70bdff]" />
-                  {feature}
-                </li>
-              ))}
+            <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6 text-sm text-zinc-300">
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Analysen / Monat</li>
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />1 Datei‑Upload / Monat</li>
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Basis‑Module</li>
             </ul>
-            <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] font-semibold text-white shadow-lg shadow-[#0A6ED1]/25 hover:bg-[#0b7ce8]">
-              Plan auswählen
+            <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+              Kostenlos starten
             </Button>
           </article>
-        ))}
-      </div>
 
-      <section className="mt-8 rounded-2xl border border-[#2a2a2a] bg-[#181818] p-5 shadow-2xl shadow-black/35 md:p-6">
-        <h2 className="text-xl font-semibold tracking-tight text-white">Feature comparison</h2>
-        <div className="mt-5 overflow-hidden rounded-2xl border border-[#2a2a2a]">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-[#101010] text-zinc-300">
-              <tr>
-                <th className="px-4 py-4 font-semibold">Feature</th>
-                <th className="px-4 py-4 font-semibold">Free</th>
-                <th className="px-4 py-4 font-semibold">Pro</th>
-                <th className="px-4 py-4 font-semibold">Enterprise</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#2a2a2a] text-zinc-400">
-              {comparison.map((row) => (
-                <tr key={row.feature}>
-                  <td className="px-4 py-4 text-zinc-200">{row.feature}</td>
-                  {[row.free, row.pro, row.enterprise].map((value, index) => (
-                    <td key={index} className="px-4 py-4">{value ? <Check className="h-5 w-5 text-[#70bdff]" /> : <Minus className="h-5 w-5 text-zinc-600" />}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {/* BASIC */}
+          <article className="rounded-2xl border border-[#2a2a2a] bg-[#181818] p-6 shadow-2xl shadow-black/35">
+            <h2 className="text-2xl font-semibold text-white">Basic</h2>
+            <p className="mt-2 text-sm text-zinc-400">Für Key‑User & kleine Fachbereiche.</p>
+            <div className="mt-6 flex items-end gap-2">
+              <span className="text-4xl font-semibold text-white">
+                {displayPrice(prices.basic)}
+              </span>
+            </div>
+            <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6 text-sm text-zinc-300">
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />20 Analysen / Monat</li>
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Datei‑Uploads / Monat</li>
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Zugriff auf 3 Module</li>
+            </ul>
+            <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+              Basic aktivieren
+            </Button>
+          </article>
+
+          {/* PRO */}
+          <article className="rounded-2xl border border-[#0A6ED1]/50 bg-[#0A6ED1]/10 p-6 shadow-2xl shadow-black/35">
+            <div className="flex items-start justify-between">
+              <h2 className="text-2xl font-semibold text-white">Pro</h2>
+              <span className="rounded-full bg-[#0A6ED1] px-3 py-1 text-xs font-semibold text-white">Popular</span>
+            </div>
+            <p className="mt-2 text-sm text-zinc-300">Für SAP‑Berater mit regelmäßigem Analysebedarf.</p>
+            <div className="mt-6 flex items-end gap-2">
+              <span className="text-4xl font-semibold text-white">
+                {displayPrice(prices.pro)}
+              </span>
+            </div>
+            <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6 text-sm text-zinc-300">
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Unbegrenzte Analysen</li>
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Unbegrenzte Uploads</li>
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Alle Module</li>
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Premium‑Ausgabe</li>
+            </ul>
+            <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+              Pro aktivieren
+            </Button>
+          </article>
+
+          {/* TEAM */}
+          <article className="rounded-2xl border border-[#2a2a2a] bg-[#181818] p-6 shadow-2xl shadow-black/35">
+            <h2 className="text-2xl font-semibold text-white">Team</h2>
+            <p className="mt-2 text-sm text-zinc-400">Für kleine Beratungsteams.</p>
+            <div className="mt-6 flex items-end gap-2">
+              <span className="text-4xl font-semibold text-white">
+                {displayPrice(prices.team)}
+              </span>
+            </div>
+            <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6 text-sm text-zinc-300">
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Pro‑Lizenzen inklusive</li>
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Login‑Keys</li>
+              <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Gemeinsame Abrechnung</li>
+            </ul>
+            <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+              Team‑Plan wählen
+            </Button>
+          </article>
+
+          {/* ENTERPRISE */}
+          <article className="rounded-2xl border border-[#2a2a2a] bg-[#181818] p-6 shadow-2xl shadow-black/35">
+            <h2 className="text-2xl font-semibold text-white">Enterprise</h2>
+            <p className="mt-2 text-sm text-zinc-400">Für größere Organisationen & Projektteams.</p>
+
+            <div className="mt-6 space-y-4">
+
+              <Button className="w-full h-12 rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+                {displayPrice(prices.enterprise15)} – bis 15 Nutzer
+              </Button>
+
+              <Button className="w-full h-12 rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+                {displayPrice(prices.enterprise20)} – bis 20 Nutzer
+              </Button>
+
+              <Button
+                variant="outline"
+                className="w-full h-12 rounded-2xl border-[#0A6ED1] text-[#0A6ED1] hover:bg-[#0A6ED1]/10"
+              >
+                20+ Nutzer – Kontakt aufnehmen
+              </Button>
+
+            </div>
+          </article>
         </div>
+
+        {/* DISCLAIMER */}
+        <div className="mt-10 text-center text-xs leading-relaxed text-zinc-500">
+          <p className="mb-2">
+            APICOSU ist kein offizielles SAP‑Produkt und steht in keiner Verbindung zur SAP SE.
+          </p>
+          <p>
+            APICOSU ist eine reine Web‑App ohne Speicherung von Dateien oder Analyseergebnissen.
+            Es gibt keine System‑Integrationen oder Rollenmodelle.
+          </p>
+        </div>
+
       </section>
-    </section>
-  </AppLayout>
-);
+    </AppLayout>
+  );
+};
 
 export default Pricing;

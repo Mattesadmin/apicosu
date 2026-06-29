@@ -8,9 +8,10 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { modules } from "@/data/modules";
+import { Button } from "@/components/ui/button";
 
 const capabilities = [
   "SAP-Fehleranalyse mit Ursache, Workaround und technischem Kontext",
@@ -23,6 +24,7 @@ const qualityRules = ["Keine erfundenen Transaktionen", "Keine falschen Tabellen
 const Index = () => {
   return (
     <AppLayout>
+      {/* HERO */}
       <section className="relative mx-auto max-w-[1200px] px-5 pb-12 pt-10 md:px-8 md:pb-16 md:pt-16">
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="space-y-7">
@@ -73,7 +75,9 @@ const Index = () => {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-white">{item}</p>
-                      <p className="mt-1 text-xs leading-5 text-zinc-400">Strukturiert mit Überschriften, Listen, Tabellen und konkreten SAP-Begriffen.</p>
+                      <p className="mt-1 text-xs leading-5 text-zinc-400">
+                        Strukturiert mit Überschriften, Listen, Tabellen und konkreten SAP-Begriffen.
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -96,6 +100,7 @@ const Index = () => {
         </div>
       </section>
 
+      {/* MODULE SECTION */}
       <section className="relative mx-auto max-w-[1200px] px-5 pb-16 md:px-8 md:pb-24">
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
@@ -140,6 +145,47 @@ const Index = () => {
               </Link>
             );
           })}
+        </div>
+      </section>
+
+      {/* COMPACT PRICING SECTION */}
+      <section className="mt-10 mx-auto max-w-[1200px] px-5 md:px-8 pb-20">
+        <h2 className="text-3xl font-semibold text-white text-center mb-10">
+          Preise & Abos
+        </h2>
+
+        <div className="grid gap-6 md:grid-cols-3">
+
+          {/* FREE */}
+          <div className="rounded-2xl border border-[#2a2a2a] bg-[#181818] p-6 text-center shadow-xl">
+            <h3 className="text-xl font-semibold text-white">Free</h3>
+            <p className="mt-2 text-sm text-zinc-400">Für erste SAP‑Analysen.</p>
+            <p className="mt-4 text-3xl font-semibold text-white">€0</p>
+            <Button asChild className="mt-6 w-full rounded-2xl bg-[#0A6ED1] text-white">
+              <NavLink to="/pricing">Mehr erfahren</NavLink>
+            </Button>
+          </div>
+
+          {/* PRO */}
+          <div className="rounded-2xl border border-[#0A6ED1]/40 bg-[#0A6ED1]/10 p-6 text-center shadow-xl">
+            <h3 className="text-xl font-semibold text-white">Pro</h3>
+            <p className="mt-2 text-sm text-zinc-300">Für SAP‑Berater.</p>
+            <p className="mt-4 text-3xl font-semibold text-white">€49 / Monat</p>
+            <Button asChild className="mt-6 w-full rounded-2xl bg-[#0A6ED1] text-white">
+              <NavLink to="/pricing">Mehr erfahren</NavLink>
+            </Button>
+          </div>
+
+          {/* TEAM */}
+          <div className="rounded-2xl border border-[#2a2a2a] bg-[#181818] p-6 text-center shadow-xl">
+            <h3 className="text-xl font-semibold text-white">Team</h3>
+            <p className="mt-2 text-sm text-zinc-400">Für kleine Beratungsteams.</p>
+            <p className="mt-4 text-3xl font-semibold text-white">€199 / Monat</p>
+            <Button asChild className="mt-6 w-full rounded-2xl bg-[#0A6ED1] text-white">
+              <NavLink to="/pricing">Mehr erfahren</NavLink>
+            </Button>
+          </div>
+
         </div>
       </section>
     </AppLayout>
