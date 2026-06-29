@@ -46,10 +46,10 @@ const Pricing = () => {
             Preise
           </p>
           <h1 className="text-4xl font-semibold tracking-[-0.04em] text-white md:text-5xl">
-            Preise & Abos für APICOSU
+            Preise & Abos
           </h1>
           <p className="mt-4 max-w-2xl mx-auto text-base leading-8 text-zinc-300">
-            Wählen Sie das passende Modell für SAP‑Analyse, Dokumentation und Beratungsunterstützung.
+            Wählen Sie das passende Modell aus:
           </p>
         </div>
 
@@ -129,7 +129,7 @@ const Pricing = () => {
               </ul>
             </div>
             <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
-              Basic aktivieren
+              auswählen
             </Button>
           </article>
 
@@ -142,7 +142,7 @@ const Pricing = () => {
                   Beliebt
                 </span>
               </div>
-              <p className="mt-2 text-sm text-zinc-300">Für SAP‑Berater mit regelmäßigem Analysebedarf.</p>
+              <p className="mt-2 text-sm text-zinc-300">Für Berater mit täglichen Analysebedarf.</p>
               <div className="mt-6 flex items-end gap-2">{displayPrice(prices.pro)}</div>
               <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6 text-sm text-zinc-300">
                 <li className="flex gap-3">
@@ -164,7 +164,7 @@ const Pricing = () => {
               </ul>
             </div>
             <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
-              Pro aktivieren
+              auswählen
             </Button>
           </article>
 
@@ -190,7 +190,7 @@ const Pricing = () => {
               </ul>
             </div>
             <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
-              Team‑Plan wählen
+              auswählen
             </Button>
           </article>
 
