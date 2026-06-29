@@ -195,33 +195,45 @@ const Pricing = () => {
           </article>
 
           {/* ENTERPRISE */}
-          <article className="flex flex-col justify-between rounded-2xl border border-[#2a2a2a] bg-[#181818] p-6 shadow-xl shadow-black/35">
+          <article className="flex flex-col justify-between rounded-2xl border border-[#2a2a2a] bg-[#181818] p-6 shadow-xl        shadow-black/35">
             <div>
-              <h2 className="text-2xl font-semibold text-white">Enterprise</h2>
-              <p className="mt-2 text-sm text-zinc-400">Für größere Organisationen & Projektteams.</p>
+               <h2 className="text-2xl font-semibold text-white">Enterprise</h2>
+               <p className="mt-2 text-sm text-zinc-400">Für größere Organisationen & Projektteams.</p>
 
-              <div className="mt-6 space-y-4">
-                <Button className="w-full h-12 rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
-                  {billingCycle === "monthly"
-                    ? "Bis 15 Nutzer – 449 € / Monat"
-                    : `Bis 15 Nutzer – ${yearlyPrice(prices.enterprise15)} € / Monat (statt 449 €)`}
-                </Button>
+               <div className="mt-6 space-y-4">
 
-                <Button className="w-full h-12 rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
-                  {billingCycle === "monthly"
-                    ? "Bis 20 Nutzer – 699 € / Monat"
-                    : `Bis 20 Nutzer – ${yearlyPrice(prices.enterprise20)} € / Monat (statt 699 €)`}
-                </Button>
+                 {/* 15 Nutzer */}
+                 <Button className="w-full h-20 flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white   hover:bg-[#0b7ce8]">
+                   <span className="text-sm font-semibold">Bis 15 Nutzer</span>
+                   <span className="text-base font-medium">
+                     {billingCycle === "monthly"
+                       ? "€449 / Monat"
+                       : `€${yearlyPrice(prices.enterprise15)} / Monat (statt €449)`}
+                   </span>
+                 </Button>
 
-                <Button
-                  variant="outline"
-                  className="w-full h-12 rounded-2xl border-[#0A6ED1] text-[#0A6ED1] hover:bg-[#0A6ED1]/10"
-                >
-                  20+ Nutzer – Kontakt aufnehmen
-                </Button>
-              </div>
-            </div>
-          </article>
+                 {/* 20 Nutzer */}
+                 <Button className="w-full h-20 flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white    hover:bg-[#0b7ce8]">
+                   <span className="text-sm font-semibold">Bis 20 Nutzer</span>
+                   <span className="text-base font-medium">
+                     {billingCycle === "monthly"
+                       ? "€699 / Monat"
+                       : `€${yearlyPrice(prices.enterprise20)} / Monat (statt €699)`}
+                   </span>
+                 </Button>
+
+                 {/* 20+ Nutzer */}
+                 <Button
+                   variant="outline"
+                   className="w-full h-20 flex flex-col items-center justify-center rounded-2xl border-[#0A6ED1] text-[#0A6ED1] hover:bg-[#0A6ED1]/10"
+                 >
+                   <span className="text-sm font-semibold">20+ Nutzer</span>
+                   <span className="text-base font-medium">Kontaktieren Sie uns</span>
+                 </Button>
+
+               </div>
+             </div>
+           </article>
         </div>
 
         {/* DISCLAIMER */}
