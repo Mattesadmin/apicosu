@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const Pricing = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const [enterpriseSelection, setEnterpriseSelection] = useState<15 | 20 | null>(null);
 
   const prices = {
     free: 0,
@@ -106,6 +107,7 @@ const Pricing = () => {
 
               <div className="mt-6">{renderPrice(prices.free, true)}</div>
 
+              {/* FIXED SPACING */}
               <div className="border-t border-[#2a2a2a] mt-6 pt-6">
                 <ul className="space-y-3 text-sm text-zinc-300">
                   <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Analysen / Monat</li>
@@ -183,7 +185,6 @@ const Pricing = () => {
                 <ul className="space-y-3 text-sm text-zinc-300">
                   <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Pro‑Lizenzen inklusive</li>
                   <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Login‑Keys</li>
-                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Gemeinsame Abrechnung</li>
                 </ul>
               </div>
             </div>
@@ -202,7 +203,14 @@ const Pricing = () => {
               <div className="mt-6 space-y-6">
 
                 {/* 15 Nutzer */}
-                <Button className="w-full flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8] py-4">
+                <Button
+                  onClick={() => setEnterpriseSelection(15)}
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-4 ${
+                    enterpriseSelection === 15
+                      ? "bg-[#0A6ED1] text-white"
+                      : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
+                  }`}
+                >
                   <span className="text-sm font-semibold">Bis 15 Nutzer</span>
 
                   {billingCycle === "monthly" ? (
@@ -222,7 +230,14 @@ const Pricing = () => {
                 </Button>
 
                 {/* 20 Nutzer */}
-                <Button className="w-full flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8] py-4">
+                <Button
+                  onClick={() => setEnterpriseSelection(20)}
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-4 ${
+                    enterpriseSelection === 20
+                      ? "bg-[#0A6ED1] text-white"
+                      : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
+                  }`}
+                >
                   <span className="text-sm font-semibold">Bis 20 Nutzer</span>
 
                   {billingCycle === "monthly" ? (
@@ -245,14 +260,26 @@ const Pricing = () => {
 
               <div className="border-t border-[#2a2a2a] mt-6 pt-6">
                 <ul className="space-y-3 text-sm text-zinc-300">
-                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Gemeinsame Abrechnung</li>
-                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Alle Module</li>
-                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Premium‑Support</li>
+                  <li className="flex gap-3">
+                    <Check className="h-4 w-4 text-[#70bdff]" />
+                    {enterpriseSelection === 15
+                      ? "15 Pro‑Lizenzen inklusive Login‑Keys"
+                      : enterpriseSelection === 20
+                      ? "20 Pro‑Lizenzen inklusive Login‑Keys"
+                      : "Pro‑Lizenzen inklusive Login‑Keys"}
+                  </li>
                 </ul>
               </div>
             </div>
 
-            <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+            <Button
+              disabled={!enterpriseSelection}
+              className={`mt-6 h-12 w-full rounded-2xl ${
+                enterpriseSelection
+                  ? "bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]"
+                  : "bg-[#2a2a2a] text-zinc-500"
+              }`}
+            >
               auswählen
             </Button>
           </article>
