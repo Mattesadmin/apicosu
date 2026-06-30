@@ -12,7 +12,7 @@ const Pricing = () => {
     pro: 49,
     team: 199,
     enterprise15: 499,
-    enterprise20: 689,
+    enterprise20: 699,
   };
 
   const yearlyPrice = (monthly: number) => Math.round(monthly * 0.9);
@@ -37,17 +37,17 @@ const Pricing = () => {
       );
     }
 
+    const discountedMonthly = yearlyPrice(monthly);
+    const totalYear = yearlyTotal(monthly);
+
     return (
       <div className="flex flex-col">
-        <div className="flex items-end gap-2">
-          <span className="text-4xl font-semibold text-white">€{yearlyPrice(monthly)}</span>
-          <span className="pb-1 text-sm text-zinc-500">/Monat</span>
-        </div>
+        <span className="text-4xl font-semibold text-white">€{totalYear} / Jahr</span>
         <span className="text-sm text-zinc-400 mt-1">
-          statt €{monthly} / Monat
+          statt €{monthly * 12} / Jahr
         </span>
         <span className="text-xs text-zinc-500 mt-1">
-          Gesamtpreis: €{yearlyTotal(monthly)} / Jahr
+          entspricht €{discountedMonthly} / Monat
         </span>
       </div>
     );
@@ -66,7 +66,7 @@ const Pricing = () => {
             Abonnements
           </h1>
           <p className="mt-4 max-w-2xl mx-auto text-base leading-8 text-zinc-300">
-            Wählen Sie das passende Modell aus:
+            Wählen Sie den passenden Tarif aus:
           </p>
         </div>
 
@@ -182,32 +182,40 @@ const Pricing = () => {
               <div className="mt-6 space-y-4">
 
                 {/* 15 Nutzer */}
-                <Button className="w-full h-20 flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+                <Button className="w-full flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8] py-4">
                   <span className="text-sm font-semibold">Bis 15 Nutzer</span>
+
                   {billingCycle === "monthly" ? (
-                    <span className="text-base font-medium">€449 / Monat</span>
+                    <span className="text-xl font-semibold mt-1">€499 / Monat</span>
                   ) : (
-                    <span className="text-base font-medium">
-                      €{yearlyPrice(prices.enterprise15)} / Monat  
-                      <span className="text-xs text-zinc-300 block mt-1">
-                        Gesamtpreis: €{yearlyTotal(prices.enterprise15)} / Jahr
+                    <div className="flex flex-col items-center mt-1">
+                      <span className="text-xl font-semibold">€{yearlyTotal(prices.enterprise15)} / Jahr</span>
+                      <span className="text-xs text-zinc-300 mt-1">
+                        statt €{prices.enterprise15 * 12} / Jahr
                       </span>
-                    </span>
+                      <span className="text-xs text-zinc-500 mt-1">
+                        entspricht €{yearlyPrice(prices.enterprise15)} / Monat
+                      </span>
+                    </div>
                   )}
                 </Button>
 
                 {/* 20 Nutzer */}
-                <Button className="w-full h-20 flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+                <Button className="w-full flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8] py-4">
                   <span className="text-sm font-semibold">Bis 20 Nutzer</span>
+
                   {billingCycle === "monthly" ? (
-                    <span className="text-base font-medium">€699 / Monat</span>
+                    <span className="text-xl font-semibold mt-1">€699 / Monat</span>
                   ) : (
-                    <span className="text-base font-medium">
-                      €{yearlyPrice(prices.enterprise20)} / Monat  
-                      <span className="text-xs text-zinc-300 block mt-1">
-                        Gesamtpreis: €{yearlyTotal(prices.enterprise20)} / Jahr
+                    <div className="flex flex-col items-center mt-1">
+                      <span className="text-xl font-semibold">€{yearlyTotal(prices.enterprise20)} / Jahr</span>
+                      <span className="text-xs text-zinc-300 mt-1">
+                        statt €{prices.enterprise20 * 12} / Jahr
                       </span>
-                    </span>
+                      <span className="text-xs text-zinc-500 mt-1">
+                        entspricht €{yearlyPrice(prices.enterprise20)} / Monat
+                      </span>
+                    </div>
                   )}
                 </Button>
 
@@ -232,4 +240,3 @@ const Pricing = () => {
 };
 
 export default Pricing;
-
