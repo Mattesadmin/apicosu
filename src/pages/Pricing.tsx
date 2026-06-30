@@ -105,9 +105,12 @@ const Pricing = () => {
               <h2 className="text-2xl font-semibold text-white">Free</h2>
               <p className="mt-2 text-sm text-zinc-400">Für erste SAP‑Analysen und Evaluation.</p>
 
-              <div className="mt-6">{renderPrice(prices.free, true)}</div>
+              <div className="mt-6">
+                {renderPrice(prices.free, true)}
+                {/* Platzhalter für gleiche Höhe */}
+                <div className="h-6"></div>
+              </div>
 
-              {/* FIXED SPACING */}
               <div className="border-t border-[#2a2a2a] mt-6 pt-6">
                 <ul className="space-y-3 text-sm text-zinc-300">
                   <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Analysen / Monat</li>
@@ -200,12 +203,12 @@ const Pricing = () => {
               <h2 className="text-2xl font-semibold text-white">Enterprise</h2>
               <p className="mt-2 text-sm text-zinc-400">Für größere Organisationen & Projektteams.</p>
 
-              <div className="mt-6 space-y-6">
+              <div className="mt-8 space-y-7">
 
                 {/* 15 Nutzer */}
                 <Button
                   onClick={() => setEnterpriseSelection(15)}
-                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-4 ${
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-5 transition-all ${
                     enterpriseSelection === 15
                       ? "bg-[#0A6ED1] text-white"
                       : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
@@ -214,11 +217,11 @@ const Pricing = () => {
                   <span className="text-sm font-semibold">Bis 15 Nutzer</span>
 
                   {billingCycle === "monthly" ? (
-                    <span className="text-xl font-semibold mt-1">
+                    <span className="text-xl font-semibold mt-0.5">
                       €499 <span className="text-sm">/Monat</span>
                     </span>
                   ) : (
-                    <div className="flex flex-col items-center mt-1">
+                    <div className="flex flex-col items-center mt-0.5">
                       <span className="text-xl font-semibold">
                         €{yearlyTotal(prices.enterprise15)} <span className="text-sm">/Jahr</span>
                       </span>
@@ -232,7 +235,7 @@ const Pricing = () => {
                 {/* 20 Nutzer */}
                 <Button
                   onClick={() => setEnterpriseSelection(20)}
-                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-4 ${
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-5 transition-all ${
                     enterpriseSelection === 20
                       ? "bg-[#0A6ED1] text-white"
                       : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
@@ -241,11 +244,11 @@ const Pricing = () => {
                   <span className="text-sm font-semibold">Bis 20 Nutzer</span>
 
                   {billingCycle === "monthly" ? (
-                    <span className="text-xl font-semibold mt-1">
+                    <span className="text-xl font-semibold mt-0.5">
                       €699 <span className="text-sm">/Monat</span>
                     </span>
                   ) : (
-                    <div className="flex flex-col items-center mt-1">
+                    <div className="flex flex-col items-center mt-0.5">
                       <span className="text-xl font-semibold">
                         €{yearlyTotal(prices.enterprise20)} <span className="text-sm">/Jahr</span>
                       </span>
@@ -258,7 +261,7 @@ const Pricing = () => {
 
               </div>
 
-              <div className="border-t border-[#2a2a2a] mt-6 pt-6">
+              <div className="border-t border-[#2a2a2a] mt-10 pt-6">
                 <ul className="space-y-3 text-sm text-zinc-300">
                   <li className="flex gap-3">
                     <Check className="h-4 w-4 text-[#70bdff]" />
