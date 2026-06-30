@@ -12,7 +12,7 @@ const Pricing = () => {
     pro: 49,
     team: 199,
     enterprise15: 499,
-    enterprise20: 699,
+    enterprise20: 689,
   };
 
   const yearlyPrice = (monthly: number) => Math.round(monthly * 0.9);
