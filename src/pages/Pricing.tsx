@@ -208,7 +208,7 @@ const Pricing = () => {
                 {/* 15 Nutzer */}
                 <Button
                   onClick={() => setEnterpriseSelection(15)}
-                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-6 transition-all ${
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-8 transition-all ${
                     enterpriseSelection === 15
                       ? "bg-[#0A6ED1] text-white"
                       : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
@@ -225,7 +225,7 @@ const Pricing = () => {
                       <span className="text-xl font-semibold">
                         €{yearlyTotal(prices.enterprise15)} <span className="text-sm">/Jahr</span>
                       </span>
-                      <span className="text-sm text-zinc-400 mt-1">
+                      <span className="text-sm text-zinc-400 mt-0.5">
                         statt €{prices.enterprise15 * 12} / Jahr
                       </span>
                     </div>
@@ -235,7 +235,7 @@ const Pricing = () => {
                 {/* 20 Nutzer */}
                 <Button
                   onClick={() => setEnterpriseSelection(20)}
-                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-6 transition-all ${
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-8 transition-all ${
                     enterpriseSelection === 20
                       ? "bg-[#0A6ED1] text-white"
                       : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
@@ -252,7 +252,7 @@ const Pricing = () => {
                       <span className="text-xl font-semibold">
                         €{yearlyTotal(prices.enterprise20)} <span className="text-sm">/Jahr</span>
                       </span>
-                      <span className="text-sm text-zinc-400 mt-1">
+                      <span className="text-sm text-zinc-400 mt-0.5">
                         statt €{prices.enterprise20 * 12} / Jahr
                       </span>
                     </div>
@@ -261,7 +261,7 @@ const Pricing = () => {
 
               </div>
 
-              <div className="border-t border-[#2a2a2a] mt-12 pt-6">
+              <div className="border-t border-[#2a2a2a] mt-11 pt-6">
                 <ul className="space-y-3 text-sm text-zinc-300">
                   <li className="flex gap-3">
                     <Check className="h-4 w-4 text-[#70bdff]" />
