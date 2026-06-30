@@ -21,33 +21,27 @@ const Pricing = () => {
   const renderPrice = (monthly: number, isFree = false) => {
     if (isFree) {
       return (
-        <div className="flex items-end gap-2">
-          <span className="text-4xl font-semibold text-white">€0</span>
-          <span className="pb-1 text-sm text-zinc-500">/Monat</span>
+        <div className="flex flex-col">
+          <span className="text-4xl font-semibold text-white">€0 / Monat</span>
         </div>
       );
     }
 
     if (billingCycle === "monthly") {
       return (
-        <div className="flex items-end gap-2">
-          <span className="text-4xl font-semibold text-white">€{monthly}</span>
-          <span className="pb-1 text-sm text-zinc-500">/Monat</span>
+        <div className="flex flex-col">
+          <span className="text-4xl font-semibold text-white">€{monthly} / Monat</span>
         </div>
       );
     }
 
-    const discountedMonthly = yearlyPrice(monthly);
-    const totalYear = yearlyTotal(monthly);
-
     return (
       <div className="flex flex-col">
-        <span className="text-4xl font-semibold text-white">€{totalYear} / Jahr</span>
+        <span className="text-4xl font-semibold text-white">
+          €{yearlyTotal(monthly)} / Jahr
+        </span>
         <span className="text-sm text-zinc-400 mt-1">
           statt €{monthly * 12} / Jahr
-        </span>
-        <span className="text-xs text-zinc-500 mt-1">
-          entspricht €{discountedMonthly} / Monat
         </span>
       </div>
     );
@@ -104,13 +98,18 @@ const Pricing = () => {
             <div>
               <h2 className="text-2xl font-semibold text-white">Free</h2>
               <p className="mt-2 text-sm text-zinc-400">Für erste SAP‑Analysen und Evaluation.</p>
+
               <div className="mt-6">{renderPrice(prices.free, true)}</div>
-              <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6 text-sm text-zinc-300">
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Analysen / Monat</li>
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />1 Datei‑Upload / Monat</li>
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Basis‑Module</li>
-              </ul>
+
+              <div className="border-t border-[#2a2a2a] mt-6 pt-6">
+                <ul className="space-y-3 text-sm text-zinc-300">
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Analysen / Monat</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />1 Datei‑Upload / Monat</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Basis‑Module</li>
+                </ul>
+              </div>
             </div>
+
             <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
               Kostenlos starten
             </Button>
@@ -121,13 +120,18 @@ const Pricing = () => {
             <div>
               <h2 className="text-2xl font-semibold text-white">Basic</h2>
               <p className="mt-2 text-sm text-zinc-400">Für Key‑User & kleine Fachbereiche.</p>
+
               <div className="mt-6">{renderPrice(prices.basic)}</div>
-              <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6 text-sm text-zinc-300">
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />20 Analysen / Monat</li>
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Datei‑Uploads / Monat</li>
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Zugriff auf 3 Module</li>
-              </ul>
+
+              <div className="border-t border-[#2a2a2a] mt-6 pt-6">
+                <ul className="space-y-3 text-sm text-zinc-300">
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />20 Analysen / Monat</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Datei‑Uploads / Monat</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Zugriff auf 3 Module</li>
+                </ul>
+              </div>
             </div>
+
             <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
               auswählen
             </Button>
@@ -142,15 +146,21 @@ const Pricing = () => {
                   Beliebt
                 </span>
               </div>
+
               <p className="mt-2 text-sm text-zinc-300">Für Berater mit täglichen Analysebedarf.</p>
+
               <div className="mt-6">{renderPrice(prices.pro)}</div>
-              <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6 text-sm text-zinc-300">
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Unbegrenzte Analysen</li>
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Unbegrenzte Uploads</li>
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Alle Module</li>
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Premium‑Ausgabe</li>
-              </ul>
+
+              <div className="border-t border-[#2a2a2a] mt-6 pt-6">
+                <ul className="space-y-3 text-sm text-zinc-300">
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Unbegrenzte Analysen</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Unbegrenzte Uploads</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Alle Module</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Premium‑Ausgabe</li>
+                </ul>
+              </div>
             </div>
+
             <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
               auswählen
             </Button>
@@ -161,13 +171,18 @@ const Pricing = () => {
             <div>
               <h2 className="text-2xl font-semibold text-white">Team</h2>
               <p className="mt-2 text-sm text-zinc-400">Für kleine Beratungsteams.</p>
+
               <div className="mt-6">{renderPrice(prices.team)}</div>
-              <ul className="mt-6 space-y-3 border-t border-[#2a2a2a] pt-6 text-sm text-zinc-300">
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Pro‑Lizenzen inklusive</li>
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Login‑Keys</li>
-                <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Gemeinsame Abrechnung</li>
-              </ul>
+
+              <div className="border-t border-[#2a2a2a] mt-6 pt-6">
+                <ul className="space-y-3 text-sm text-zinc-300">
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Pro‑Lizenzen inklusive</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />5 Login‑Keys</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Gemeinsame Abrechnung</li>
+                </ul>
+              </div>
             </div>
+
             <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
               auswählen
             </Button>
@@ -179,48 +194,57 @@ const Pricing = () => {
               <h2 className="text-2xl font-semibold text-white">Enterprise</h2>
               <p className="mt-2 text-sm text-zinc-400">Für größere Organisationen & Projektteams.</p>
 
-              <div className="mt-6 space-y-4">
+              <div className="mt-6 space-y-6">
 
                 {/* 15 Nutzer */}
-                <Button className="w-full flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8] py-4">
-                  <span className="text-sm font-semibold">Bis 15 Nutzer</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-zinc-300">Bis 15 Nutzer</span>
 
                   {billingCycle === "monthly" ? (
-                    <span className="text-xl font-semibold mt-1">€499 / Monat</span>
+                    <span className="text-3xl font-semibold text-white mt-1">€499 / Monat</span>
                   ) : (
-                    <div className="flex flex-col items-center mt-1">
-                      <span className="text-xl font-semibold">€{yearlyTotal(prices.enterprise15)} / Jahr</span>
-                      <span className="text-xs text-zinc-300 mt-1">
+                    <>
+                      <span className="text-3xl font-semibold text-white mt-1">
+                        €{yearlyTotal(prices.enterprise15)} / Jahr
+                      </span>
+                      <span className="text-sm text-zinc-400 mt-1">
                         statt €{prices.enterprise15 * 12} / Jahr
                       </span>
-                      <span className="text-xs text-zinc-500 mt-1">
-                        entspricht €{yearlyPrice(prices.enterprise15)} / Monat
-                      </span>
-                    </div>
+                    </>
                   )}
-                </Button>
+                </div>
 
                 {/* 20 Nutzer */}
-                <Button className="w-full flex flex-col items-center justify-center rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8] py-4">
-                  <span className="text-sm font-semibold">Bis 20 Nutzer</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-zinc-300">Bis 20 Nutzer</span>
 
                   {billingCycle === "monthly" ? (
-                    <span className="text-xl font-semibold mt-1">€699 / Monat</span>
+                    <span className="text-3xl font-semibold text-white mt-1">€699 / Monat</span>
                   ) : (
-                    <div className="flex flex-col items-center mt-1">
-                      <span className="text-xl font-semibold">€{yearlyTotal(prices.enterprise20)} / Jahr</span>
-                      <span className="text-xs text-zinc-300 mt-1">
+                    <>
+                      <span className="text-3xl font-semibold text-white mt-1">
+                        €{yearlyTotal(prices.enterprise20)} / Jahr
+                      </span>
+                      <span className="text-sm text-zinc-400 mt-1">
                         statt €{prices.enterprise20 * 12} / Jahr
                       </span>
-                      <span className="text-xs text-zinc-500 mt-1">
-                        entspricht €{yearlyPrice(prices.enterprise20)} / Monat
-                      </span>
-                    </div>
+                    </>
                   )}
-                </Button>
+                </div>
+              </div>
 
+              <div className="border-t border-[#2a2a2a] mt-6 pt-6">
+                <ul className="space-y-3 text-sm text-zinc-300">
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Gemeinsame Abrechnung</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Alle Module</li>
+                  <li className="flex gap-3"><Check className="h-4 w-4 text-[#70bdff]" />Premium‑Support</li>
+                </ul>
               </div>
             </div>
+
+            <Button className="mt-6 h-12 w-full rounded-2xl bg-[#0A6ED1] text-white hover:bg-[#0b7ce8]">
+              Kontakt aufnehmen
+            </Button>
           </article>
         </div>
 
