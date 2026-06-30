@@ -208,7 +208,7 @@ const Pricing = () => {
                 {/* 15 Nutzer */}
                 <Button
                   onClick={() => setEnterpriseSelection(15)}
-                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-10 transition-all ${
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-12 transition-all ${
                     enterpriseSelection === 15
                       ? "bg-[#0A6ED1] text-white"
                       : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
@@ -235,7 +235,7 @@ const Pricing = () => {
                 {/* 20 Nutzer */}
                 <Button
                   onClick={() => setEnterpriseSelection(20)}
-                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-10 transition-all ${
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-12 transition-all ${
                     enterpriseSelection === 20
                       ? "bg-[#0A6ED1] text-white"
                       : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
