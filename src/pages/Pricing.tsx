@@ -203,12 +203,12 @@ const Pricing = () => {
               <h2 className="text-2xl font-semibold text-white">Enterprise</h2>
               <p className="mt-2 text-sm text-zinc-400">Für größere Organisationen & Projektteams.</p>
 
-              <div className="mt-10 space-y-8">
+              <div className="mt-11 space-y-9">
 
                 {/* 15 Nutzer */}
                 <Button
                   onClick={() => setEnterpriseSelection(15)}
-                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-8 transition-all ${
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-10 transition-all ${
                     enterpriseSelection === 15
                       ? "bg-[#0A6ED1] text-white"
                       : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
@@ -235,7 +235,7 @@ const Pricing = () => {
                 {/* 20 Nutzer */}
                 <Button
                   onClick={() => setEnterpriseSelection(20)}
-                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-8 transition-all ${
+                  className={`w-full flex flex-col items-center justify-center rounded-2xl py-10 transition-all ${
                     enterpriseSelection === 20
                       ? "bg-[#0A6ED1] text-white"
                       : "bg-[#1f1f1f] text-zinc-300 hover:bg-[#2a2a2a]"
