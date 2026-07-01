@@ -109,7 +109,7 @@ const Pricing = () => {
                 {renderPrice(prices.free, true)}
 
                 {/* Dynamischer Platzhalter für identische Höhe in Monat & Jahr */}
-                <div className={billingCycle === "monthly" ? "h-2" : "h-1"}></div>
+                <div className={billingCycle === "monthly" ? "h-[2px]" : "h-[4px]"}></div>
               </div>
 
               <div className="border-t border-[#2a2a2a] mt-6 pt-6">
