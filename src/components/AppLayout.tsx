@@ -5,10 +5,10 @@ import { ModuleDropdown } from "@/components/ModuleDropdown";
 
 
 const utilityLinks = [
-  { label: "Pricing", path: "/pricing" },
   { label: "Login", path: "/login" },
   { label: "Register", path: "/register" },
   { label: "Account", path: "/account" },
+  { label: "Preise", path: "/pricing" },
 ];
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>

@@ -24,6 +24,7 @@ const qualityRules = ["Keine erfundenen Transaktionen", "Keine falschen Tabellen
 const Index = () => {
   return (
     <AppLayout>
+
       {/* HERO */}
       <section className="relative mx-auto max-w-[1200px] px-5 pb-12 pt-10 md:px-8 md:pb-16 md:pt-16">
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
@@ -187,6 +188,18 @@ const Index = () => {
           </div>
 
         </div>
+
+        {/* DISCLAIMER */}
+        <div className="mt-10 text-center text-xs leading-relaxed text-zinc-500">
+          <p className="mb-2">
+            APICOSU ist kein offizielles SAP‑Produkt und steht in keiner Verbindung zur SAP SE.
+          </p>
+          <p>
+            APICOSU ist eine reine Web‑App ohne Speicherung von Dateien oder Analyseergebnissen.
+            Es gibt keine System‑Integrationen oder Rollenmodelle.
+          </p>
+        </div>
+
       </section>
     </AppLayout>
   );
