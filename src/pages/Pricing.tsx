@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const Pricing = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
-  const [enterpriseSelection, setEnterpriseSelection] = useState<15 | 20 | null>(null);
+  const [enterpriseSelection, setEnterpriseSelection] = useState<15 | 20 | null>(15);
 
   const prices = {
     free: 0,
