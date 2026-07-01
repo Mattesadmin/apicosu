@@ -106,10 +106,25 @@ const Pricing = () => {
               <p className="mt-2 text-sm text-zinc-400">Für erste SAP‑Analysen und Evaluation.</p>
 
               <div className="mt-6">
-                {renderPrice(prices.free, true)}
+                
+                {/* Perfekt ausgerichteter Preisblock für Monat & Jahr */}
+                {billingCycle === "monthly" ? (
+                  <div className="flex items-end gap-2">
+                    <span className="text-4xl font-semibold text-white">€0</span>
+                    <span className="pb-1 text-sm text-zinc-500">/Monat</span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col">
+                    <div className="flex items-end gap-2">
+                      <span className="text-4xl font-semibold text-white">€0</span>
+                      <span className="pb-1 text-sm text-zinc-500">/Jahr</span>
+                    </div>
 
-                {/* Dynamischer Platzhalter für identische Höhe in Monat & Jahr */}
-                <div className={billingCycle === "monthly" ? "h-[2px]" : "h-[6px]"}></div>
+                    {/* Unsichtbare zweite Zeile für perfekte Höhe */}
+                    <span className="text-sm text-transparent mt-[2px] select-none">unsichtbar</span>
+                  </div>
+                )}
+
               </div>
 
               <div className="border-t border-[#2a2a2a] mt-6 pt-6">
