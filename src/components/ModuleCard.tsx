@@ -35,7 +35,6 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
             border border-[#0A6ED1]/25 bg-[#0A6ED1]/12 text-[#70bdff]
             transition-all duration-300
             group-hover:bg-[#0A6ED1] group-hover:text-white
-            group-hover:rotate-[3deg] group-hover:scale-[1.05]
           "
         >
           <Icon className="h-6 w-6" />
