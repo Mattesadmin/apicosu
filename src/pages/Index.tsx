@@ -12,6 +12,7 @@ import { Link, NavLink } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { modules } from "@/data/modules";
 import { Button } from "@/components/ui/button";
+import { ModuleCard } from "@/components/ModuleCard";   // ← NEU
 
 const capabilities = [
   "SAP-Fehleranalyse mit Ursache, Workaround und technischem Kontext",
@@ -56,6 +57,7 @@ const Index = () => {
             </div>
           </div>
 
+          {/* RIGHT SIDE – SAP ISSUE INTAKE */}
           <div className="rounded-[2rem] border border-[#2a2a2a] bg-[#181818] p-4 shadow-2xl shadow-black/50">
             <div className="rounded-[1.5rem] border border-[#2a2a2a] bg-[#101010] p-5">
               <div className="mb-5 flex items-center justify-between">
@@ -68,20 +70,54 @@ const Index = () => {
                 </div>
               </div>
 
+              {/* FIXED BLOCK */}
               <div className="space-y-3">
-                {capabilities.map((item, index) => (
-                  <div key={item} className="flex gap-3 rounded-2xl border border-[#2a2a2a] bg-[#181818] p-4">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0A6ED1]/15 text-[#70bdff]">
-                      {index === 0 ? <SearchCode className="h-5 w-5" /> : index === 1 ? <Layers3 className="h-5 w-5" /> : <BookOpenCheck className="h-5 w-5" />}
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-white">{item}</p>
-                      <p className="mt-1 text-xs leading-5 text-zinc-400">
-                        Strukturiert mit Überschriften, Listen, Tabellen und konkreten SAP-Begriffen.
-                      </p>
-                    </div>
+
+                {/* 1 */}
+                <div className="flex gap-3 rounded-2xl border border-[#2a2a2a] bg-[#181818] p-4">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0A6ED1]/15 text-[#70bdff]">
+                    <SearchCode className="h-5 w-5" />
                   </div>
-                ))}
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      SAP‑Fehleranalyse mit Ursache, Workaround und technischem Kontext
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-zinc-400">
+                      Analysiert technische Zusammenhänge, betroffene Objekte und liefert klare Handlungsempfehlungen.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 2 */}
+                <div className="flex gap-3 rounded-2xl border border-[#2a2a2a] bg-[#181818] p-4">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0A6ED1]/15 text-[#70bdff]">
+                    <Layers3 className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      Customizing‑Checks für IMG, Tabellen und Prozessabhängigkeiten
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-zinc-400">
+                      Prüft IMG‑Strukturen, Tabellenabhängigkeiten und relevante Prozessverknüpfungen.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 3 */}
+                <div className="flex gap-3 rounded-2xl border border-[#2a2a2a] bg-[#181818] p-4">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0A6ED1]/15 text-[#70bdff]">
+                    <BookOpenCheck className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      Blueprint‑, Testdaten‑ und Trainingsdokumente im Beratungsformat
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-zinc-400">
+                      Erstellt strukturierte Dokumente mit klaren SAP‑Begriffen, Listen und Tabellen.
+                    </p>
+                  </div>
+                </div>
+
               </div>
 
               <div className="mt-5 rounded-2xl border border-[#0A6ED1]/25 bg-[#0A6ED1]/10 p-4">
@@ -114,38 +150,11 @@ const Index = () => {
           </p>
         </div>
 
+        {/* ⭐ NEUE PREMIUM-MODULECARDS */}
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {modules.map((module) => {
-            const Icon = module.icon;
-            return (
-              <Link
-                to={module.path}
-                key={module.title}
-                className="group rounded-2xl border border-[#2a2a2a] bg-[#181818] p-5 shadow-2xl shadow-black/35 transition duration-300 hover:-translate-y-1 hover:border-[#0A6ED1]/45 hover:bg-[#202020] hover:shadow-[#0A6ED1]/10"
-              >
-                <div className="mb-5 flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#0A6ED1]/25 bg-[#0A6ED1]/12 text-[#70bdff] transition duration-300 group-hover:bg-[#0A6ED1] group-hover:text-white">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <ArrowRight className="mt-3 h-5 w-5 text-zinc-500 transition duration-300 group-hover:translate-x-1 group-hover:text-[#70bdff]" />
-                </div>
-
-                <h3 className="text-xl font-semibold tracking-tight text-white">{module.title}</h3>
-                <p className="mt-3 min-h-20 text-sm leading-6 text-zinc-400">{module.description}</p>
-
-                <div className="mt-5 space-y-3 border-t border-[#2a2a2a] pt-5">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Input</p>
-                    <p className="mt-1 text-sm leading-6 text-zinc-300">{module.input}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Output</p>
-                    <p className="mt-1 text-sm leading-6 text-zinc-300">{module.output}</p>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+          {modules.map((module) => (
+            <ModuleCard key={module.title} module={module} />
+          ))}
         </div>
       </section>
 
